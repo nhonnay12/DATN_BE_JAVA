@@ -9,6 +9,7 @@ import com.datn.models.entity.User;
 import com.datn.models.exception.AppException;
 import com.datn.models.exception.ErrorCode;
 import com.datn.repository.UserRepository;
+import com.datn.service.CartService;
 import com.datn.service.impl.CartServiceImpl;
 import com.datn.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ import java.util.Date;
 public class CartController {
 
     @Autowired
-    private CartServiceImpl cartService;
+    private CartService cartService;
 @Autowired
 private UserRepository userRepository;
 
@@ -47,7 +48,7 @@ private UserRepository userRepository;
 
 
     // get all cart items for a user
-    @GetMapping("/")
+    @GetMapping()
     public ResponseEntity<CartDto> getCartItems() {
         var context = SecurityContextHolder.getContext();
         String name = context.getAuthentication().getName();

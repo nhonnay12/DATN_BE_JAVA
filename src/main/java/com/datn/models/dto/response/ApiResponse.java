@@ -6,8 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
-
 @Data
 @Builder
 @AllArgsConstructor
@@ -16,6 +14,5 @@ import java.io.Serializable;
 public class ApiResponse<T> {
     private int code;
     private String message;
-    T result;
-
+    private T result;
 }

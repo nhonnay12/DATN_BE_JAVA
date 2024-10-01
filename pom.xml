@@ -22,6 +22,15 @@
         <spotless.version>2.43.0</spotless.version>
     </properties>
     <dependencies>
+
+        <!-- Model map -->
+        <dependency>
+            <groupId>org.modelmapper</groupId>
+            <artifactId>modelmapper</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+        <!-- Model map -->
+
         <!-- Swagger dependencies -->
         <dependency>
             <groupId>org.springdoc</groupId>

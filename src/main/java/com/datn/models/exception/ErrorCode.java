@@ -32,6 +32,7 @@ public enum ErrorCode {
     AUTHOR_EXISTED(1010, "Author existed", HttpStatus.BAD_REQUEST),
     PUBLISHER_EXISTED(1011, "Publisher existed", HttpStatus.BAD_REQUEST),
     PRO_NOT_EXIST_IN_CART(1011, "Product not exist in cart", HttpStatus.BAD_REQUEST),
+    CART_EMPTY(1011, "Cart is empty", HttpStatus.BAD_REQUEST),
     ;
 
 

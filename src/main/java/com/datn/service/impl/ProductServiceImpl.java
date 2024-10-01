@@ -1,6 +1,7 @@
 package com.datn.service.impl;
 
 import com.datn.controller.ImageController;
+import com.datn.models.dto.ProductPagingResponse;
 import com.datn.models.dto.request.product_cate_cart.ProductRequest;
 import com.datn.models.dto.request.product_cate_cart.ProductUpdate;
 import com.datn.models.dto.response.ProductResponse;
@@ -19,10 +20,15 @@ import com.datn.service.ImageService;
 import com.datn.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -103,5 +109,40 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void deleteProduct(Long id) {
         productRepository.deleteById(id);
+    }
+
+    @Override
+    public ProductPagingResponse getAllProductWithPagingAndSort(Integer pageNumber, Integer pageSize, String sortBy, String dir) {
+        Sort sort = dir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, sort); // vi pgaeNumber bat dau tu 1 nen khi lay page se lay pageNumber - 1 vì khi lấy nó lay từ 0
+        Page<Product> productPage = productRepository.findAll(pageable);
+        List<Product> productList = productPage.getContent();
+
+        List<ProductResponse> productResponseList = new ArrayList<>();
+        for (Product product : productList) {
+            ProductResponse productResponse = productMapper.toProductResponse(product);
+            productResponseList.add(productResponse);
+        }
+
+        return new ProductPagingResponse(productResponseList,
+                pageNumber, pageSize, productPage.getTotalElements(),
+                productPage.getTotalPages(), productPage.isLast());
+    }
+
+    @Override
+    public ProductPagingResponse getAllProductwithPaging(Integer pageNumber, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber-1, pageSize);// vi pgaeNumber bat dau tu 1 nen khi lay page se lay pageNumber - 1 vì khi lấy nó lay từ 0
+        Page<Product> productPage = productRepository.findAll(pageable);
+        List<Product> productList = productPage.getContent();
+
+        List<ProductResponse> productResponseList = new ArrayList<>();
+        for (Product product : productList) {
+            ProductResponse productResponse = productMapper.toProductResponse(product);
+            productResponseList.add(productResponse);
+        }
+
+        return new ProductPagingResponse(productResponseList,
+                pageNumber, pageSize, productPage.getTotalElements(),
+                productPage.getTotalPages(), productPage.isLast());
     }
 }

@@ -1,5 +1,7 @@
 package com.datn.controller.product;
 
+import com.datn.constant.PageParam;
+import com.datn.models.dto.ProductPagingResponse;
 import com.datn.models.dto.response.ProductResponse;
 import com.datn.models.dto.request.product_cate_cart.ProductRequest;
 import com.datn.models.dto.request.product_cate_cart.ProductUpdate;
@@ -97,5 +99,27 @@ public class ProductController {
                 .message("Delete sucessful")
                 .build();
         return apiResponse;
+    }
+    @GetMapping("/getProductPaging")
+    public ApiResponse<ProductPagingResponse> getAllProductWithPaging(
+            @RequestParam(defaultValue = PageParam.PAGE_NUM) Integer pageNumber,
+            @RequestParam(defaultValue = PageParam.PAGE_SIZE) Integer pageSize
+    ){
+        return ApiResponse.<ProductPagingResponse>builder()
+                .result(productService.getAllProductwithPaging(pageNumber, pageSize))
+                .build();
+
+    }
+    @GetMapping("/getProductPagingSort")
+    public ApiResponse<ProductPagingResponse> getAllProductWithPagingSort(
+            @RequestParam(defaultValue = PageParam.PAGE_NUM) Integer pageNumber,
+            @RequestParam(defaultValue = PageParam.PAGE_SIZE) Integer pageSize,
+            @RequestParam(defaultValue = PageParam.SORT_BY) String sortBy,
+            @RequestParam(defaultValue = PageParam.SORT_DIR) String sortDir
+    ){
+        return ApiResponse.<ProductPagingResponse>builder()
+                .result(productService.getAllProductWithPagingAndSort(pageNumber, pageSize, sortBy, sortDir))
+                .build();
+
     }
 }

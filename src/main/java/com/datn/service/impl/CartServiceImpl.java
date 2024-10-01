@@ -10,6 +10,7 @@ import com.datn.models.exception.AppException;
 import com.datn.models.exception.ErrorCode;
 import com.datn.repository.CartRepository;
 import com.datn.repository.ProductRepository;
+import com.datn.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,13 +19,13 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class CartServiceImpl {
+public class CartServiceImpl implements CartService {
     @Autowired
     ProductRepository productRepository;
 
     @Autowired
     CartRepository cartRepository;
-
+    @Override
     public Cart addToCart(AddToCart addToCartDto, User user) {
 
         // validate if the product id is valid
@@ -49,7 +50,7 @@ public class CartServiceImpl {
             return cartRepository.save(newCart);
         }
     }
-
+    @Override
     public CartDto listCartItems(User user) {
         List<Cart> cartList = cartRepository.findAllByUserOrderByCreatedDateDesc(user);
 
@@ -66,14 +67,14 @@ public class CartServiceImpl {
         cartDto.setCartItems(cartItems);
         return cartDto;
     }
-
+    @Override
     public void deleteCartItem(Integer cartItemId, User user) {
         // the item id belongs to user
 
         Cart optionalCart = cartRepository.findById(cartItemId).orElseThrow(() -> new AppException(ErrorCode.PRO_NOT_EXIST_IN_CART));
         cartRepository.delete(optionalCart);
     }
-
+    @Override
     public void deleteAll(User user) {
         List<Cart> cart = cartRepository.findAllByUser(user);
         cartRepository.deleteAll(cart);
