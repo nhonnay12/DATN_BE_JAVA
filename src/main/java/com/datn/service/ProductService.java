@@ -17,4 +17,6 @@ public interface ProductService {
     void deleteProduct(Long id);
     public ProductPagingResponse getAllProductWithPagingAndSort(Integer pageNumber, Integer pageSize, String sortBy, String dir);
     public ProductPagingResponse getAllProductwithPaging(Integer pageNumber, Integer pageSize);
+    public ProductPagingResponse getAllProductwithPagingWithCategory(Integer pageNumber, Integer pageSize, Long category_id);
+    public ProductPagingResponse getAllProductwithPagingWithPublisher(Integer pageNumber, Integer pageSize, Long publisher_id);
 }

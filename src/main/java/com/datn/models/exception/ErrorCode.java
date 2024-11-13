@@ -8,7 +8,7 @@ import lombok.Getter;
 @Getter
 public enum ErrorCode {
     UNCATEGORIZED_EXCEPTION(9999, "Uncategorized error", HttpStatus.INTERNAL_SERVER_ERROR),
-    INVALID_KEY(1001, "Uncategorized error", HttpStatus.BAD_REQUEST),
+    INVALID_KEY(1001, "Key error", HttpStatus.BAD_REQUEST),
     USER_EXISTED(1002, "User existed", HttpStatus.BAD_REQUEST),
     USERNAME_INVALID(1003, "Username must be at least 4 characters", HttpStatus.BAD_REQUEST),
     USER_NOT_EXISTED(1005, "User not existed", HttpStatus.NOT_FOUND),
@@ -16,7 +16,7 @@ public enum ErrorCode {
     UNAUTHENTICATED(1006, "Unauthenticated", HttpStatus.UNAUTHORIZED),
     UNAUTHORIZED(1007, "You do not have permission", HttpStatus.FORBIDDEN),
     INVALID_DOB(1008, "Your age must be at least {min}", HttpStatus.BAD_REQUEST),
-    PERMISSION_EXISTED(1009, "User existed", HttpStatus.BAD_REQUEST),
+    PERMISSION_EXISTED(1009, "Permission existed", HttpStatus.BAD_REQUEST),
     PERMISSION_NOT_EXISTED(1010, "Permission not existed", HttpStatus.NOT_FOUND),
     ROLE_NOT_EXISTED(1011, "Role not existed", HttpStatus.NOT_FOUND),
     PRICE_INVALID(1012, "Price must be number", HttpStatus.BAD_REQUEST),
@@ -31,8 +31,13 @@ public enum ErrorCode {
     DIRECTORY_CREATION_FAILED(1019, "DIRECTORY_CREATION_FAILED", HttpStatus.BAD_REQUEST),
     AUTHOR_EXISTED(1010, "Author existed", HttpStatus.BAD_REQUEST),
     PUBLISHER_EXISTED(1011, "Publisher existed", HttpStatus.BAD_REQUEST),
-    PRO_NOT_EXIST_IN_CART(1011, "Product not exist in cart", HttpStatus.BAD_REQUEST),
-    CART_EMPTY(1011, "Cart is empty", HttpStatus.BAD_REQUEST),
+    PRO_NOT_EXIST_IN_CART(1012, "Product not exist in cart", HttpStatus.BAD_REQUEST),
+    CART_EMPTY(1014, "Cart is empty", HttpStatus.BAD_REQUEST),
+    EMAIL_NOT_NULL(1015, "Email not null", HttpStatus.BAD_REQUEST),
+    PHONE_NOT_NULL(1016, "Phone not null", HttpStatus.BAD_REQUEST),
+    EMAIL_INVALID_GMAIL_FORMAT(1017, "Email must be format @gmail.com", HttpStatus.BAD_REQUEST),
+    EMAIL_NOT_EXISTED(1018, "Email not existed", HttpStatus.BAD_REQUEST),
+    EMAIL_EXISTED(1019, "Email existed", HttpStatus.BAD_REQUEST),
     ;
 
 

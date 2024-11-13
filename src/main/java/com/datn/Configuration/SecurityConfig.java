@@ -21,19 +21,34 @@ import org.springframework.web.filter.CorsFilter;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
-    private final String[] PUBLIC_ENDPOINTS = {
-            "/api/user", "/api/auth/login", "/api/auth/introspect", "/api/auth/logout", "/api/auth/refresh", "api/v1/redis", "/api/product",
-            "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html"
-//            , "/api/v1/payment/vn-pay-callback"
-    };
-
     @Autowired
     private CustomJwtDecoder customJwtDecoder;
+
+    private static final String[] PUBLIC_ENDPOINTS = {
+            "/api/user",
+            "/api/product/getProductPaging",
+            "/api/product/getProductWithCategory",
+            "/api/product/getProductWithPublisher",
+            "/api/publisher/getall",
+            "/api/category/getall",
+            "/api/category",
+            "/api/user/getall",
+            "/api/auth/login",
+            "/api/auth/introspect",
+            "/api/auth/logout",
+            "/api/auth/signup",
+            "/api/auth/verify_user",
+            "/api/auth/refresh",
+            "api/v1/redis",
+            "/api/product",
+            "/api/v1/payment/vn-pay",
+            "/api/v1/payment/vn-pay-callback"
+    };
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(request -> request
-                .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS)
+                .requestMatchers(PUBLIC_ENDPOINTS) //HttpMethod.POST vi co post nen no khong nhan
                 .permitAll()
                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html")
                 .permitAll()
@@ -43,13 +58,8 @@ public class SecurityConfig {
                         .decoder(customJwtDecoder)
                         .jwtAuthenticationConverter(jwtAuthenticationConverter()))
                 .authenticationEntryPoint(new JwtAuthenticationEntryPoint()));
-//        httpSecurity
-//                .oauth2ResourceServer(AbstractHttpConfigurer::disable) // Tắt OAuth2 Resource Server
-//                .authorizeHttpRequests(request -> request
-//                        .anyRequest()
-//                        .permitAll());
-        httpSecurity.csrf(AbstractHttpConfigurer::disable);
-
+        httpSecurity
+                .csrf(AbstractHttpConfigurer::disable) ;// Tắt CSRF
         return httpSecurity.build();
     }
 
@@ -78,8 +88,5 @@ public class SecurityConfig {
         return jwtAuthenticationConverter;
     }
 
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(10);
-    }
+
 }

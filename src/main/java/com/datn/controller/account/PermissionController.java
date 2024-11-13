@@ -1,6 +1,6 @@
 package com.datn.controller.account;
 
-import com.datn.models.dto.request.user_request.PermissionRequest;
+import com.datn.models.dto.request.user_role.PermissionRequest;
 import com.datn.models.dto.response.ApiResponse;
 import com.datn.models.dto.response.PermissionResponse;
 import com.datn.service.PermissionService;

@@ -36,7 +36,7 @@ public class PublisherController {
                 .build();
         return apiResponse;
     }
-    @GetMapping
+    @GetMapping("/getall")
     public ApiResponse<List<PublisherResponse>> getAllPublishers() {
         ApiResponse<List<PublisherResponse>> apiResponse = ApiResponse.<List<PublisherResponse>>builder()
                 .code(200)

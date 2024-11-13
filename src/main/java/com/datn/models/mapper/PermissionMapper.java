@@ -1,6 +1,6 @@
 package com.datn.models.mapper;
 
-import com.datn.models.dto.request.user_request.PermissionRequest;
+import com.datn.models.dto.request.user_role.PermissionRequest;
 import com.datn.models.dto.response.PermissionResponse;
 import com.datn.models.entity.Permission;
 import org.mapstruct.Mapper;

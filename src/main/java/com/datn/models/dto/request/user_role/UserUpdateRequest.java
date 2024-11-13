@@ -1,24 +1,23 @@
-package com.datn.models.dto.request.user_request;
+package com.datn.models.dto.request.user_role;
 
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserCreationRequest {
-
-    @Size(min = 4, message = "USERNAME_INVALID")
-    private String username;
-    @Size(min = 8, message = "INVALID_PASSWORD")
+public class UserUpdateRequest {
+    private String id;
     private String password;
     private String firstName;
     private String lastName;
     private String email;
     private String phone;
     private String roles;
+    private String username;
 }

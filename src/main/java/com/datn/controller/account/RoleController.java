@@ -3,7 +3,7 @@ package com.datn.controller.account;
 import com.datn.models.dto.response.ApiResponse;
 import com.datn.models.dto.response.RoleResponse;
 import com.datn.service.RoleService;
-import com.datn.models.dto.request.user_request.RoleRequest;
+import com.datn.models.dto.request.user_role.RoleRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

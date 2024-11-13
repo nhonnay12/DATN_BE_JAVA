@@ -1,6 +1,6 @@
 package com.datn.service;
 
-import com.datn.models.dto.request.user_request.PermissionRequest;
+import com.datn.models.dto.request.user_role.PermissionRequest;
 import com.datn.models.dto.response.PermissionResponse;
 
 import java.util.List;

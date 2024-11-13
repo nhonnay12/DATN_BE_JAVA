@@ -1,6 +1,6 @@
 package com.datn.models.mapper;
 
-import com.datn.models.dto.request.user_request.RoleRequest;
+import com.datn.models.dto.request.user_role.RoleRequest;
 import com.datn.models.dto.response.RoleResponse;
 import com.datn.models.entity.Role;
 import org.mapstruct.Mapper;

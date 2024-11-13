@@ -32,4 +32,9 @@ public class ImageData {
     @JoinColumn(name = "product_id")  // Tên cột khóa ngoại trong bảng ImageData
     @JsonIgnore
     private Product product;
+    @ManyToOne
+    @JoinColumn(name = "user_id")  // Tên cột khóa ngoại trong bảng ImageData
+    @JsonIgnore
+    private User user;
+    private boolean hidden;
 }

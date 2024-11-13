@@ -1,11 +1,13 @@
 package com.datn.models.dto.response;
 
+import com.datn.models.entity.ImageData;
 import com.datn.models.entity.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -21,4 +23,6 @@ public class UserResponse {
     private String email;
     private String phone;
     Set<Role> roles;
+    private List<ImageData> images;
+    private boolean enabled;
 }

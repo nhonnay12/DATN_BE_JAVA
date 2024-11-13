@@ -28,6 +28,11 @@ public class Author {
     private String country;
 
     @ManyToMany
+    @JoinTable(
+            name = "publisher_authors",
+            joinColumns = @JoinColumn(name = "author_id"),
+            inverseJoinColumns = @JoinColumn(name = "publisher_id")
+    )
     @JsonIgnore
-    Set<Publisher> publishers;
+    Set<Publisher> publisher;
 }

@@ -1,6 +1,6 @@
 package com.datn.service;
 
-import com.datn.models.dto.request.user_request.RoleRequest;
+import com.datn.models.dto.request.user_role.RoleRequest;
 import com.datn.models.dto.response.RoleResponse;
 
 import java.util.List;

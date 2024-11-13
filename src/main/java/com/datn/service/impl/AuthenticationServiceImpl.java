@@ -1,16 +1,7 @@
 package com.datn.service.impl;
 
-import java.text.ParseException;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Date;
-import java.util.StringJoiner;
-import java.util.UUID;
-
-import com.datn.models.dto.request.authen_request.IntrospectRequest;
-import com.datn.models.dto.request.authen_request.AuthenticationRequest;
-import com.datn.models.dto.request.authen_request.LogoutRequest;
-import com.datn.models.dto.request.authen_request.RefreshRequest;
+import com.datn.models.dto.request.authen_request.*;
+import com.datn.models.dto.request.user_role.UserCreationRequest;
 import com.datn.models.dto.response.AuthenticationResponse;
 import com.datn.models.dto.response.IntrospectResponse;
 import com.datn.models.entity.InvalidatedToken;
@@ -19,23 +10,29 @@ import com.datn.models.exception.AppException;
 import com.datn.models.exception.ErrorCode;
 import com.datn.repository.InvalidatedTokenRepository;
 import com.datn.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
-
+import jakarta.mail.MessagingException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+
+import java.text.ParseException;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -57,6 +54,13 @@ public class AuthenticationServiceImpl {
     @Value("${jwt.refreshable-duration}")
     protected long REFRESHABLE_DURATION;
 
+
+    EmailServiceImpl emailService;
+
+    PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+
+
+    //check token
     public IntrospectResponse introspect(IntrospectRequest request) throws JOSEException, ParseException {
         var token = request.getToken();
         boolean isValid = true;
@@ -70,12 +74,15 @@ public class AuthenticationServiceImpl {
         return IntrospectResponse.builder().valid(isValid).build();
     }
 
+    // xac thuc username, password, mail
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         var user = userRepository
                 .findByUsername(request.getUsername())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-
+        if (!user.isEnabled()) {
+            throw new RuntimeException("Account not verified. Please verify your account!");
+        }
         boolean authenticated = passwordEncoder.matches(request.getPassword(), user.getPassword());
 
         if (!authenticated) throw new AppException(ErrorCode.UNAUTHENTICATED);
@@ -132,7 +139,7 @@ public class AuthenticationServiceImpl {
                 .expirationTime(new Date(
                         Instant.now().plus(VALID_DURATION, ChronoUnit.SECONDS).toEpochMilli()))
                 .jwtID(UUID.randomUUID().toString())
-                .claim("scope", buildScope(user))
+                .claim("role", buildScope(user))
                 .build();
 
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
@@ -177,11 +184,94 @@ public class AuthenticationServiceImpl {
 
         if (!CollectionUtils.isEmpty(user.getRoles()))
             user.getRoles().forEach(role -> {
-                stringJoiner.add("ROLE_" + role.getName());
+                StringJoiner add = stringJoiner.add(role.getName());
                 if (!CollectionUtils.isEmpty(role.getPermissions()))
                     role.getPermissions().forEach(permission -> stringJoiner.add(permission.getName()));
             });
 
         return stringJoiner.toString();
+    }
+
+    public User signup(UserCreationRequest request) {
+        if(userRepository.findByEmail(request.getEmail()).isPresent()){
+            throw new AppException(ErrorCode.EMAIL_EXISTED);
+        }
+
+        User user = User.builder().username(
+                        request.getUsername())
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .verificationCode(generateVerificationCode())
+                .verificationCodeExpiresAt(LocalDateTime.now().plusMinutes(15))
+                .enabled(false)
+                .build();
+        sendVerificationEmail(user);
+        return userRepository.save(user);
+
+    }
+
+    public void resendVerificationCode(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        user.setVerificationCode(generateVerificationCode());
+        sendVerificationEmail(user);
+        userRepository.save(user);
+
+    }
+
+    private void sendVerificationEmail(User user) { //TODO: Update with company logo
+        String subject = "Account Verification";
+//        String verificationCode = "VERIFICATION CODE " + user.getVerificationCode();
+        String verificationCode = user.getVerificationCode();
+        String htmlMessage = "<html>"
+                + "<body style=\"font-family: Arial, sans-serif;\">"
+                + "<div style=\"background-color: #f5f5f5; padding: 20px;\">"
+                + "<h2 style=\"color: #333;\">Welcome to Tuan Book app!</h2>"
+                + "<p style=\"font-size: 16px;\">Please enter the verification code below to continue:</p>"
+                + "<div style=\"background-color: #fff; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.1);\">"
+                + "<h3 style=\"color: #333;\">Verification Code:</h3>"
+                + "<p style=\"font-size: 18px; font-weight: bold; color: #007bff;\">" + verificationCode + "</p>"
+                + "</div>"
+                + "</div>"
+                + "</body>"
+                + "</html>";
+
+        try {
+            emailService.sendEmail(user.getEmail(), subject, htmlMessage);
+        } catch (MessagingException e) {
+            // Handle email sending exception
+            e.printStackTrace();
+        }
+    }
+
+    private String generateVerificationCode() {
+        Random random = new Random();
+        int code = random.nextInt(900000) + 100000;
+        return String.valueOf(code);
+    }
+
+    public void verifyUser(VerifyUser request) throws JOSEException, ParseException {
+        Optional<User> optionalUser = userRepository.findByEmail(request.getEmail());
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            if (user.getVerificationCodeExpiresAt().isBefore(LocalDateTime.now())) {
+                throw new RuntimeException("Verification code has expired");
+            }
+            if (user.getVerificationCode().equals(request.getVerifyCode())) {
+                user.setEnabled(true);
+                user.setVerificationCode(null);
+                user.setVerificationCodeExpiresAt(null);
+                userRepository.save(user);
+            } else {
+                throw new RuntimeException("Invalid verification code");
+            }
+        } else {
+            throw new RuntimeException("User not found");
+        }
+
+    }
+
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(10);
     }
 }

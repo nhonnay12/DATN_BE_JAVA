@@ -7,7 +7,7 @@ import com.datn.models.mapper.RoleMapper;
 import com.datn.repository.PermissionRepository;
 import com.datn.repository.RoleRepository;
 import com.datn.service.RoleService;
-import com.datn.models.dto.request.user_request.RoleRequest;
+import com.datn.models.dto.request.user_role.RoleRequest;
 import com.datn.models.exception.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -35,7 +35,7 @@ public class CategoryController {
                 .build();
         return apiResponse;
     }
-    @GetMapping
+    @GetMapping("/getall")
     public ApiResponse<List<CategoryResponse>> getAllCategorys() {
         ApiResponse<List<CategoryResponse>> apiResponse = ApiResponse.<List<CategoryResponse>>builder()
                 .code(200)

@@ -27,7 +27,7 @@ public class Publisher {
     String name;
     String address;
     String phone;
-    @ManyToMany
+    @ManyToMany(mappedBy = "publisher")
     @JsonIgnore
-    Set<Author> authors;
+    Set<Author> author;
 }

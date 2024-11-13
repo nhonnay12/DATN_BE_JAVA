@@ -45,7 +45,6 @@ public class ImageServiceImpl implements ImageService {
                 throw new AppException(ErrorCode.DIRECTORY_CREATION_FAILED);
             }
         }
-
         String originalFilename = file.getOriginalFilename();
         String extension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
         if (originalFilename != null && originalFilename.length() > 0) {
