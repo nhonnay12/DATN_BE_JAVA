@@ -24,5 +24,5 @@ public class UserResponse {
     private String phone;
     Set<Role> roles;
     private List<ImageData> images;
-    private boolean enabled;
+    private String status;
 }

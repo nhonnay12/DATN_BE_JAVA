@@ -13,5 +13,4 @@ import lombok.experimental.FieldDefaults;
 public class AddToCart {
     //int id;
     @NotNull Long product_id;
-    @NotNull int quantity = 1;
 }

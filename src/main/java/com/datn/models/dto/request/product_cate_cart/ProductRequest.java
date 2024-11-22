@@ -16,4 +16,6 @@ public class ProductRequest {
     private Long category_id;
     private int author_id;
     private int publisher_id;
+    private String user_id;
+    private String linkDrive;
 }

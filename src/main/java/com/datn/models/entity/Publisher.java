@@ -21,7 +21,7 @@ import java.util.Set;
 public class Publisher {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int id;
+    Integer id;
     @Column(name = "name", unique = true, columnDefinition
             = "VARCHAR(255) COLLATE utf8mb4_unicode_ci")
     String name;

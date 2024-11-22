@@ -2,9 +2,13 @@ package com.datn.models.dto;
 
 import com.datn.models.entity.Cart;
 import com.datn.models.entity.Product;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -13,13 +17,10 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CartItemDto {
-    int id;
-    Product product;
+    List<Product> product;
     int quantity;
-
-    public CartItemDto(Cart cart) {
-        this.id = cart.getId();
-        this.quantity = cart.getQuantity();
-        this.setProduct(cart.getProduct());
-    }
+   // public CartItemDto(Cart cart) {
+        //this.quantity = cart.getQuantity();
+        //this.product = cart.getProduct();
+   // }
 }

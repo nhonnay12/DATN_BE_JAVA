@@ -20,6 +20,8 @@ public class ProductResponse{
     private boolean status;
     private List<ImageData> images;
     private Category category;
-    private Set<Author> authors;
+    private Author author;
     private Publisher publisher;
+    private User user;
+    private String linkDrive;
 }

@@ -20,14 +20,19 @@ import org.springframework.web.filter.CorsFilter;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-public class SecurityConfig {
+public class
+SecurityConfig {
     @Autowired
-    private CustomJwtDecoder customJwtDecoder;
+  private CustomJwtDecoder customJwtDecoder;
 
     private static final String[] PUBLIC_ENDPOINTS = {
+            "/api/author",
             "/api/user",
             "/api/product/getProductPaging",
+            "/filter/page/{page}",
+            "/filter/page",
             "/api/product/getProductWithCategory",
+            "/api/product/getProductWithAuthors",
             "/api/product/getProductWithPublisher",
             "/api/publisher/getall",
             "/api/category/getall",

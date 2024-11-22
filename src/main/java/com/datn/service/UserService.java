@@ -1,5 +1,6 @@
 package com.datn.service;
 
+import com.datn.models.dto.ProductPagingResponse;
 import com.datn.models.dto.request.user_role.UserUpdateRequest;
 import com.datn.models.dto.response.UserPagingResponse;
 import com.datn.models.dto.response.UserResponse;
@@ -22,5 +23,4 @@ public interface UserService {
     public UserPagingResponse getAllUserwithPaging(Integer pageNumber, Integer pageSize);
 
     public UserPagingResponse getAllUserWithPagingAndSort(Integer pageNumber, Integer pageSize, String sortBy, String dir);
-
 }

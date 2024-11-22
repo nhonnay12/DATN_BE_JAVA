@@ -34,7 +34,6 @@ public class CategoryServiceImpl implements CategoryService {
 
         return categoryRepo.findAll().stream().map(categoryMapper::toCategoryResponse).toList();
     }
-
     @Override
     public CategoryResponse updateCategory(CategoryUpdate request) {
         var category = categoryRepo.findById(request.getId()).orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_EXISTED));

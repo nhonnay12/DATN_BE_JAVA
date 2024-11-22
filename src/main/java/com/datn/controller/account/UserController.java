@@ -42,7 +42,7 @@ public class UserController {
             @Pattern(regexp = "^[A-Za-z0-9._%+-]+@gmail\\.com$", message = "EMAIL_INVALID_GMAIL_FORMAT") String email,
             @RequestParam(value = "phone", required = false) String phone,
             @RequestParam(value = "roles", required = false) String roles,
-            @RequestParam(value = "enabled", required = false) boolean enabled,
+            @RequestParam(value = "status", required = false) String status,
             @RequestParam(value = "userImage", required = false) MultipartFile file
     ) {
 
@@ -54,7 +54,7 @@ public class UserController {
                 .lastName(lastName)
                 .email(email)
                 .phone(phone)
-                .enabled(enabled)
+                .status(status)
                 .roles(roles)
                 .build();
 
@@ -71,9 +71,11 @@ public class UserController {
     @PutMapping
     public ApiResponse<UserResponse> updateUser(
             @RequestParam(value = "id", required = true) String id,  // Đảm bảo id được truyền
-            @Valid @RequestParam("username") @Size(min = 4, message = "USERNAME_INVALID") String username,
+            @Valid @RequestParam(value = "username", required = false) @Size(min = 4, message = "USERNAME_INVALID") String username,
             @RequestParam(value = "role", required = false) String role,
-            @RequestParam(value = "userImage", required = false) MultipartFile file
+            @RequestParam(value = "status", required = false) String status,
+            @RequestParam(value = "userImage", required = false) MultipartFile file,
+            @RequestParam(value = "phone", required = false) String phone
     ) {
         if (id == null || id.trim().isEmpty()) {
             throw new AppException(ErrorCode.USER_NOT_EXISTED); // Tạo lỗi nếu ID bị thiếu
@@ -82,6 +84,8 @@ public class UserController {
         UserUpdateRequest userUpdateRequest = UserUpdateRequest.builder()
                 .id(id)
                 .roles(role)
+                .status(status)
+                .phone(phone)
                 .username(username)
                 .build();
         ApiResponse<UserResponse> apiResponse = ApiResponse.<UserResponse>builder()

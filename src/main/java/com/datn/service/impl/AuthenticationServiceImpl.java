@@ -80,8 +80,8 @@ public class AuthenticationServiceImpl {
         var user = userRepository
                 .findByUsername(request.getUsername())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-        if (!user.isEnabled()) {
-            throw new RuntimeException("Account not verified. Please verify your account!");
+        if (!user.getStatus().equals("ACTIVE")) {
+            throw new AppException(ErrorCode.USER_BANED);
         }
         boolean authenticated = passwordEncoder.matches(request.getPassword(), user.getPassword());
 
@@ -201,9 +201,10 @@ public class AuthenticationServiceImpl {
                         request.getUsername())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .verificationCode(generateVerificationCode())
-                .verificationCodeExpiresAt(LocalDateTime.now().plusMinutes(15))
-                .enabled(false)
+               // .verificationCode(generateVerificationCode())
+                //.verificationCodeExpiresAt(LocalDateTime.now().plusMinutes(15))
+                //.enabled(false)
+                .status("ACTIVE")
                 .build();
         sendVerificationEmail(user);
         return userRepository.save(user);
@@ -212,7 +213,7 @@ public class AuthenticationServiceImpl {
 
     public void resendVerificationCode(String email) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-        user.setVerificationCode(generateVerificationCode());
+        //user.setVerificationCode(generateVerificationCode());
         sendVerificationEmail(user);
         userRepository.save(user);
 
@@ -221,7 +222,7 @@ public class AuthenticationServiceImpl {
     private void sendVerificationEmail(User user) { //TODO: Update with company logo
         String subject = "Account Verification";
 //        String verificationCode = "VERIFICATION CODE " + user.getVerificationCode();
-        String verificationCode = user.getVerificationCode();
+      //  String verificationCode = user.getVerificationCode();
         String htmlMessage = "<html>"
                 + "<body style=\"font-family: Arial, sans-serif;\">"
                 + "<div style=\"background-color: #f5f5f5; padding: 20px;\">"
@@ -229,7 +230,7 @@ public class AuthenticationServiceImpl {
                 + "<p style=\"font-size: 16px;\">Please enter the verification code below to continue:</p>"
                 + "<div style=\"background-color: #fff; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.1);\">"
                 + "<h3 style=\"color: #333;\">Verification Code:</h3>"
-                + "<p style=\"font-size: 18px; font-weight: bold; color: #007bff;\">" + verificationCode + "</p>"
+             //   + "<p style=\"font-size: 18px; font-weight: bold; color: #007bff;\">" + verificationCode + "</p>"
                 + "</div>"
                 + "</div>"
                 + "</body>"
@@ -253,17 +254,6 @@ public class AuthenticationServiceImpl {
         Optional<User> optionalUser = userRepository.findByEmail(request.getEmail());
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            if (user.getVerificationCodeExpiresAt().isBefore(LocalDateTime.now())) {
-                throw new RuntimeException("Verification code has expired");
-            }
-            if (user.getVerificationCode().equals(request.getVerifyCode())) {
-                user.setEnabled(true);
-                user.setVerificationCode(null);
-                user.setVerificationCodeExpiresAt(null);
-                userRepository.save(user);
-            } else {
-                throw new RuntimeException("Invalid verification code");
-            }
         } else {
             throw new RuntimeException("User not found");
         }

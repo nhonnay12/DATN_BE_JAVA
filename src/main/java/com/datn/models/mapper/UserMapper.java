@@ -14,6 +14,7 @@ public interface UserMapper {
     User toUser(UserCreationRequest request);
 
     @Mapping(target = "images", source = "images")
+    @Mapping(target = "status", source = "status")
     UserResponse toUserResponse(User user);
 
     @Mapping(target = "username", source = "username")

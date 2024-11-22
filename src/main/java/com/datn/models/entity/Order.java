@@ -1,30 +1,56 @@
+
+
 package com.datn.models.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.math.BigDecimal;
 
 @Entity
-@Table(name = "orders")
-@Getter
-@Setter
-@NoArgsConstructor
+@Data
 @AllArgsConstructor
+@NoArgsConstructor
+@Table (name = "tbl_oder")
 @Builder
 public class Order {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-    private LocalDateTime orderDate;
-    private String orderStatus;
-    private Double totalAmount;
-    private String paymentMethod;
-    private String shippingAddress;
+    private String userId;
+
+    private String firstname; // bắt buộc
+
+    private String lastname;
+
+    private String country; // bắt buộc
+
+    private String address;// địa chỉ người nhận bắt buộc
+
+    private String town;
+
+    private String state;// tên khu vực
+
+   // private long postCode;// mã bưu chính
+
+    private String email; // bắt buộc
+
+    private String phone; // băt buộc
+
+    private String note;// chú ý
+
+    private long totalPrice;
+
+    private String paymentmethod; // phương thức thanh toán
+
+    private OrderStatus status;
+
+    @OneToOne
+    @JoinColumn(name = "cart_id", referencedColumnName = "id")
+    private Cart cart;
 
 }
-

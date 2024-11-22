@@ -27,4 +27,5 @@ public class UserCreationRequest {
     private String phone;
     private String roles;
     private boolean enabled;
+    private String status= "ACTIVE";
 }

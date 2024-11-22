@@ -20,7 +20,7 @@ import java.util.List;
 @RequestMapping("/api/product")
 public class ProductController {
     @Autowired
-    private ProductService productService;
+  private ProductService productService;
 
     // @CacheEvict(cacheNames = "cache1", allEntries = true) // Xóa tất cả các entry trong cache1
 
@@ -83,11 +83,33 @@ public class ProductController {
     //    @CachePut(cacheNames = "cache2", key = "'product_' + #productUpdate.getId()")
 //    @CacheEvict(cacheNames = "cache1", allEntries = true) // Xóa tất cả các entry trong cache1
     @PutMapping("/update")
-    public ApiResponse<ProductResponse> updateProduct(@RequestBody ProductUpdate productUpdate) {
+    public ApiResponse<ProductResponse> updateProduct(@RequestParam(value = "file", required = false) MultipartFile files,
+                                                      @RequestParam(value = "name", required = false) String name,
+                                                      @RequestParam("id") Long id,
+                                                      @RequestParam(value = "description", required = false) String description,
+                                                      @RequestParam(value = "price", required = false) Double price,
+                                                      @RequestParam(value = "quantity", required = false) Integer quantity,
+                                                      @RequestParam(value = "status", required = false) boolean status,
+                                                      @RequestParam(value = "category_id", required = false) Long category_id,
+                                                      @RequestParam(value = "author_id", required = false) Integer author_id,
+                                                      @RequestParam(value = "publisher_id", required = false) Integer publisher_id
+    ) throws IOException {
+
+        ProductUpdate productUpdate = ProductUpdate.builder()
+                .id(id)
+                .name(name)
+                .description(description)
+                .price(price)
+                .quantity(1)
+                .status(status)
+                .category_id(category_id)
+                .author_id(author_id)
+                .publisher_id(publisher_id)
+                .build();
         ApiResponse<ProductResponse> apiResponse = ApiResponse.<ProductResponse>builder()
                 .code(200)
                 .message("Success")
-                .result(productService.updateProduct(productUpdate))
+                .result(productService.updateProduct(productUpdate, files))
                 .build();
         return apiResponse;
     }
@@ -128,7 +150,8 @@ public class ProductController {
                 .result(productService.getAllProductwithPagingWithCategory(pageNumber, pageSize, category_id))
                 .build();
 
-    }   @GetMapping("/getProductWithPublisher")
+    }
+    @GetMapping("/getProductWithPublisher")
     public ApiResponse<ProductPagingResponse> getAllProductWithPagingWithPublisher(
             @RequestParam(defaultValue = PageParam.PAGE_NUM) Integer pageNumber,
             @RequestParam(defaultValue = PageParam.PAGE_SIZE) Integer pageSize,
@@ -138,6 +161,19 @@ public class ProductController {
                 .code(200)
                 .message("sucess")
                 .result(productService.getAllProductwithPagingWithPublisher(pageNumber, pageSize, publisher_id))
+                .build();
+
+    }
+    @GetMapping("/getProductWithAuthors")
+    public ApiResponse<ProductPagingResponse> getAllProductWithPagingWithAuthors(
+            @RequestParam(defaultValue = PageParam.PAGE_NUM) Integer pageNumber,
+            @RequestParam(defaultValue = PageParam.PAGE_SIZE) Integer pageSize,
+            @RequestParam("author_id") Long author_id
+    ) {
+        return ApiResponse.<ProductPagingResponse>builder()
+                .code(200)
+                .message("sucess")
+                .result(productService.getAllProductwithPagingWithAuthor(pageNumber, pageSize, author_id))
                 .build();
 
     }
@@ -151,6 +187,18 @@ public class ProductController {
     ) {
         return ApiResponse.<ProductPagingResponse>builder()
                 .result(productService.getAllProductWithPagingAndSort(pageNumber, pageSize, sortBy, sortDir))
+                .build();
+
+    }
+    @GetMapping("/getProductWithUser")
+    public ApiResponse<ProductPagingResponse> getAllProductWithPagingWithUser(
+            @RequestParam(defaultValue = PageParam.PAGE_NUM) Integer pageNumber,
+            @RequestParam(defaultValue = PageParam.PAGE_SIZE) Integer pageSize
+    ) {
+        return ApiResponse.<ProductPagingResponse>builder()
+                .code(200)
+                .message("sucess")
+                .result(productService.getAllProductwithPagingWithUser(pageNumber, pageSize))
                 .build();
 
     }

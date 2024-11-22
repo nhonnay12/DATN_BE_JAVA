@@ -12,6 +12,8 @@ import java.util.List;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CartDto {
-    List<CartItemDto> cartItems;
+    List<CartItemDto> cart;
+    Integer id;
     double totalPrice;
+    double totalProduct;
 }

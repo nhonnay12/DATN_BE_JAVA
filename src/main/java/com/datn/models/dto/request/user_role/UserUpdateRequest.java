@@ -20,4 +20,5 @@ public class UserUpdateRequest {
     private String phone;
     private String roles;
     private String username;
+    private String status;
 }

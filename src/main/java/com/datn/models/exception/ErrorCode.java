@@ -38,8 +38,14 @@ public enum ErrorCode {
     EMAIL_INVALID_GMAIL_FORMAT(1017, "Email must be format @gmail.com", HttpStatus.BAD_REQUEST),
     EMAIL_NOT_EXISTED(1018, "Email not existed", HttpStatus.BAD_REQUEST),
     EMAIL_EXISTED(1019, "Email existed", HttpStatus.BAD_REQUEST),
+    CART_NOT_EXITS(1020, "CART_NOT_EXITS", HttpStatus.BAD_REQUEST),
+    PRODUCT_EXISTED_TO_CART(1021, "Sản phẩm đã có trong giỏ hàng", HttpStatus.BAD_REQUEST),
+    ORDER_NOT_EXIST(1022, "ORDER NOT EXIST", HttpStatus.BAD_REQUEST),
+    USER_BANED(1023, "USER_BANED", HttpStatus.BAD_REQUEST),
+    PRODUCT_NOT_CHANGES(1024, "PRODUCT_NOT_CHANGES", HttpStatus.BAD_REQUEST),
+    PRODUCT_EXISTED(1025, "PRODUCT EXISTED", HttpStatus.BAD_REQUEST),
+    PRODUCT_NOT_ACTIVE(1026, "PRODUCT_NOT_ACTIVE", HttpStatus.BAD_REQUEST),
     ;
-
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {
         this.code = code;

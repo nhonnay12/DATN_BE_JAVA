@@ -55,6 +55,7 @@ public class UserServiceImpl implements UserService {
             throw new AppException(ErrorCode.EMAIL_EXISTED);
         }
         User user = userMapper.toUser(request);
+        //  user.setEnabled(true);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         if (user.getRoles() != null && !user.getRoles().isEmpty()) {
             HashSet<Role> roles = new HashSet<>();
@@ -73,7 +74,7 @@ public class UserServiceImpl implements UserService {
             imageData.setUser(user);
             user.setImages(Collections.singletonList(imageData));
         }
-        user.setEnabled(request.isEnabled());
+        // user.setEnabled(request.isEnabled());
         log.info("User ID: {}", user.getId());
         User savedUser = userRepository.save(user);
         log.info("Saved user ID: {}", savedUser.getId());
@@ -94,10 +95,15 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         log.info(user.toString());
         // Cập nhật các trường dữ liệu người dùng chỉ nếu có thay đổi
-        if (request.getUsername() != null && !request.getUsername().equals(user.getUsername())) {
-            user.setUsername(request.getUsername());
-        }
 
+        if (request.getStatus() != null && !request.getStatus().equals(user.getStatus())) {
+            user.setStatus(request.getStatus());
+
+        }
+        if (request.getPhone() != null && !request.getPhone().equals(user.getPhone())) {
+            user.setPhone(request.getPhone());
+
+        }
         // Cập nhật roles chỉ khi roles có thay đổi
         if (request.getRoles() != null && !request.getRoles().equals(user.getRoles())) {
             HashSet<Role> roles = new HashSet<>();
@@ -150,8 +156,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(String id) {
-        imageRepo.deleteByUserId(id);
-        userRepository.deleteById(id);
+        User user = userRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        user.setStatus("INACTIVE");
+        userRepository.save(user);
     }
 
     //    @PreAuthorize("hasRole('ADMIN')")

@@ -42,6 +42,11 @@ public class Product extends BaseEntity {
     @JoinColumn(name = "publisher_id")
     Publisher publisher;
 
-    @ManyToMany
-    Set<Author> authors;
+    @ManyToOne
+    @JoinColumn(name = "author_id")
+    private Author author;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+    private String linkDrive;
 }

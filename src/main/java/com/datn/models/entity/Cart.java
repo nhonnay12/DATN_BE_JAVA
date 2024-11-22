@@ -1,34 +1,35 @@
 package com.datn.models.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-import java.util.Date;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Table(name = "cart")
 @Getter
 @Setter
-@NoArgsConstructor
+@Builder
 @AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "tbl_cart")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Cart {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
-    @Column(name = "create_date")
-    Date createdDate;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
 
+    private String userId; // có thể get từ header của securitycontextHolder
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "cart")
+    @JsonManagedReference
+    private List<CartItem> cartItems = new ArrayList<>();
 
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
-
-    int quantity;
+    private long totalPrice;
+private int totalProducts;
+    // Getters và setters
+    private String status;
 }
