@@ -37,6 +37,7 @@ public class CartService {
     CartItemRepository cartItemRepository;
     ProductRepository productRepository;
     private final UserRepository userRepository;
+
     // Thêm sản phẩm vào giỏ hàng
     public CartDTO addItemToCart(Long productId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -112,7 +113,8 @@ public class CartService {
 
         // Tìm kiếm sản phẩm trong giỏ hàng
         Optional<CartItem> cartItemOptional = cart.getCartItems().stream()
-                .filter(item -> item.getProduct().getId().equals(productId))
+                .filter(cartItem -> cartItem.getProduct().getId().equals(productId))
+                .filter(cartItem -> "ACTIVE".equals(cartItem.getStatus()))
                 .findFirst();
 
         if (cartItemOptional.isPresent()) {
@@ -151,41 +153,14 @@ public class CartService {
     }
 
 
-//    // Xóa sản phẩm khỏi giỏ hàng
-//    public CartDTO removeItemFromCart(Long productId) {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        User user = userRepository.findByUsername(authentication.getName()).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-//        String userId = user.getId();
-//        Cart cart = cartRepository.findByUserIdAndStatus(userId, "ACTIVE")
-//                .orElseThrow(() -> new AppException(ErrorCode.CART_NOT_EXITS));
-//
-//        Optional<CartItem> cartItemOptional = cart.getCartItems().stream()
-//                .filter(item -> item.getProduct().getId().equals(productId))
-//                .findFirst();
-//
-//        if (cartItemOptional.isPresent()) {
-//            CartItem cartItem = cartItemOptional.get();
-//            cartItem.setStatus("INACTIVE");
-//            cart.getCartItems().remove(cartItem);
-//        } else {
-//            throw new AppException(ErrorCode.PRODUCT_NOT_EXISTED);
-//        }
-//        cart.setTotalPrice(cart.getCartItems().stream()
-//                .filter(item -> "ACTIVE".equals(item.getStatus()))
-//                .mapToLong(CartItem::getPrice)
-//                .sum());
-//        cart.setTotalProducts(cart.getCartItems().stream()
-//                .filter(item -> "ACTIVE".equals(item.getStatus()))
-//                .mapToInt(CartItem::getQuantity)
-//                .sum());
-//
-//
-//        List<CartItem> cartActive = cart.getCartItems().stream()
-//                .filter(cartItem -> "ACTIVE".equals(cartItem.getStatus()))
-//                .collect(Collectors.toList());
-//        cart.setCartItems(cartActive);
-//        return CartMapper.toCartDTO(cartRepository.save(cart));
-//    }
+    public Cart updateCartStatus(String orderId, String status) {
+        Cart cart = cartRepository.findByOrderIdAndStatus(orderId, "ACTIVE");
+
+        // Cập nhật trạng thái giỏ hàng
+        cart.setStatus(status);
+        cartRepository.save(cart); // Lưu thông tin cập nhật vào cơ sở dữ liệu}
+        return cart;
+    }
 
     // Lấy tất cả giỏ hàng của người dùng (bao gồm cả các giỏ hàng đã checkout)
     public List<Cart> getAllCartsByUserId(String userId) {
@@ -211,6 +186,7 @@ public class CartService {
 
         return CartMapper.toCartDTO(cartRepository.save(cart));
     }
+    
 }
 
 // Cập nhật số lượng cho sản phẩm
@@ -246,4 +222,39 @@ public class CartService {
 //                .sum());
 //
 //        return cartRepository.save(cart);
+//    }
+//    // Xóa sản phẩm khỏi giỏ hàng
+//    public CartDTO removeItemFromCart(Long productId) {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        User user = userRepository.findByUsername(authentication.getName()).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+//        String userId = user.getId();
+//        Cart cart = cartRepository.findByUserIdAndStatus(userId, "ACTIVE")
+//                .orElseThrow(() -> new AppException(ErrorCode.CART_NOT_EXITS));
+//
+//        Optional<CartItem> cartItemOptional = cart.getCartItems().stream()
+//                .filter(item -> item.getProduct().getId().equals(productId))
+//                .findFirst();
+//
+//        if (cartItemOptional.isPresent()) {
+//            CartItem cartItem = cartItemOptional.get();
+//            cartItem.setStatus("INACTIVE");
+//            cart.getCartItems().remove(cartItem);
+//        } else {
+//            throw new AppException(ErrorCode.PRODUCT_NOT_EXISTED);
+//        }
+//        cart.setTotalPrice(cart.getCartItems().stream()
+//                .filter(item -> "ACTIVE".equals(item.getStatus()))
+//                .mapToLong(CartItem::getPrice)
+//                .sum());
+//        cart.setTotalProducts(cart.getCartItems().stream()
+//                .filter(item -> "ACTIVE".equals(item.getStatus()))
+//                .mapToInt(CartItem::getQuantity)
+//                .sum());
+//
+//
+//        List<CartItem> cartActive = cart.getCartItems().stream()
+//                .filter(cartItem -> "ACTIVE".equals(cartItem.getStatus()))
+//                .collect(Collectors.toList());
+//        cart.setCartItems(cartActive);
+//        return CartMapper.toCartDTO(cartRepository.save(cart));
 //    }

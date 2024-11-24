@@ -1,6 +1,9 @@
 package com.datn.payment.vnpay;
 
+import com.datn.cart.OrderService;
 import com.datn.models.dto.response.ApiResponse;
+import com.datn.models.entity.OrderStatus;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/payment")
@@ -30,15 +34,35 @@ public class PaymentController {
     }
 
     @GetMapping("/vn-pay-callback")
-    public ApiResponse<PaymentDTO.VNPayResponse> payCallbackHandler(HttpServletResponse response, @RequestParam String vnp_ResponseCode) throws IOException {
-            //  String status = response.getParameter("vnp_ResponseCode");
-            response.sendRedirect("http://localhost:3000/order");
-            if ( vnp_ResponseCode.equals("00")) {
-                log.info("Thành công" + vnp_ResponseCode);
-                return new ApiResponse<>(200, "Thanh toán đơn hàng thành công", new PaymentDTO.VNPayResponse("00", "Success", ""));
-            } else {
-                log.info("MÃ LỖI" + vnp_ResponseCode);
-                return new ApiResponse<>(400, "Failed", null);
-            }
+    public ApiResponse<Void> payCallbackHandler(HttpServletResponse response, @RequestParam Map<String, String> params) throws IOException {
+        String vnp_ResponseCode = params.get("vnp_ResponseCode");  // Lấy tham số từ callback
+
+        String vnp_TxnRef = params.get("vnp_TxnRef");
+        String vnp_TransactionNo = params.get("vnp_TransactionNo");
+        // Nếu không có vnp_ResponseCode thì trả về lỗi
+//        if (vnp_ResponseCode == null) {
+//            log.error("vnp_ResponseCode is missing!");
+//            return new ApiResponse<>(400, "vnp_ResponseCode is missing", null);
+//        }
+
+        response.sendRedirect("http://localhost:3000/payment-callback?vnp_ResponseCode=" + vnp_ResponseCode+"&"  + "vnp_TxnRef=" + vnp_TxnRef +"&" + "vnp_TransactionNo=" + vnp_TransactionNo);
+        // Xử lý logic tiếp theo dựa vào vnp_ResponseCode
+        if (vnp_ResponseCode.equals("00")) {
+
+           // log.info("Thanh toán thành công: " + vnp_ResponseCode);
+            return ApiResponse.<Void>builder()
+                    .code(200)
+                    .message("Thanh toan thanh cong")
+                    .build();
+
+            //, new PaymentDTO.VNPayResponse("00", "Success", "")
+        } else {
+            log.info("Mã lỗi: " + vnp_ResponseCode);
+            return new ApiResponse<>(400, "Thanh toán thất bại", null);
+        }
+
+        // Điều hướng với vnp_ResponseCode chính xác
     }
+
+
 }

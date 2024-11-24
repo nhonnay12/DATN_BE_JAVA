@@ -24,4 +24,8 @@ public class ProductResponse{
     private Publisher publisher;
     private User user;
     private String linkDrive;
+    ProductResponse(String name, String linkDrive) {
+        this.name = name;
+        this.linkDrive = linkDrive;
+    }
 }

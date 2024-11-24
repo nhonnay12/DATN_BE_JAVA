@@ -3,6 +3,7 @@ package com.datn.cart;
 import com.datn.models.entity.*;
 import com.datn.models.exception.AppException;
 import com.datn.models.exception.ErrorCode;
+import com.datn.repository.CartItemRepository;
 import com.datn.repository.CartRepository;
 import com.datn.repository.OrderRepository;
 import com.datn.repository.UserRepository;
@@ -10,11 +11,18 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.connector.ClientAbortException;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.awt.print.Pageable;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,9 +33,10 @@ public class OrderService {
     CartRepository cartRepository;
     OrderRepository orderRepository;
     private final UserRepository userRepository;
+    private final CartItemRepository cartItemRepository;
 
-    // Tạo đơn hàng mới từ giỏ hàng
     public Order createOrderFromCart(CreateOrderRequest request) {
+        // Lấy thông tin người dùng từ SecurityContextHolder
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userRepository.findByUsername(authentication.getName())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
@@ -37,77 +46,76 @@ public class OrderService {
         // Tìm giỏ hàng đang hoạt động của người dùng
         Cart cart = cartRepository.findByUserIdAndStatus(userId, "ACTIVE")
                 .orElseThrow(() -> new AppException(ErrorCode.CART_NOT_EXITS));
-        log.info("Found Cart: {}", cart);
 
-        // Kiểm tra xem Order đã tồn tại hay chưa
+        // Lọc các CartItems có trạng thái là ACTIVE
+        cart.setCartItems(cart.getCartItems().stream()
+                .filter(cartItem -> "ACTIVE".equals(cartItem.getStatus()))
+                .collect(Collectors.toList()));
+
+        // Kiểm tra xem Order đã tồn tại hay chưa, dựa vào Cart
         Order order = orderRepository.findByCart(cart).orElse(null);
 
         if (order != null) {
-            // Nếu Order đã tồn tại, cập nhật lại các thông tin cần thiết
             log.info("Order already exists for the cart. Updating order.");
-            order.setFirstname(request.getFirstname());
-            order.setLastname(request.getLastname());
-            order.setCountry(request.getCountry());
-            order.setAddress(request.getAddress());
-            order.setTown(request.getTown());
-            order.setState(request.getState());
-           // order.setPostCode(request.getPostCode());
-            order.setEmail(request.getEmail());
-            order.setPhone(request.getPhone());
-            order.setNote(request.getNote());
-            order.setPaymentmethod(request.getPaymentmethod());
-            order.setTotalPrice(cart.getTotalPrice());
-            order.setStatus(OrderStatus.PENDING); // Cập nhật trạng thái
+            updateOrderDetails(order, request, cart);
         } else {
-            // Nếu Order chưa tồn tại, tạo mới
             log.info("Creating a new order for the cart.");
             order = new Order();
             order.setCart(cart); // Liên kết Cart
             order.setUserId(userId);
-            order.setFirstname(request.getFirstname());
-            order.setLastname(request.getLastname());
-            order.setCountry(request.getCountry());
-            order.setAddress(request.getAddress());
-            order.setTown(request.getTown());
-            order.setState(request.getState());
-          //  order.setPostCode(request.getPostCode());
-            order.setEmail(request.getEmail());
-            order.setPhone(request.getPhone());
-            order.setNote(request.getNote());
-            order.setPaymentmethod(request.getPaymentmethod());
-            order.setTotalPrice(cart.getTotalPrice());
-            order.setStatus(OrderStatus.PENDING); // Trạng thái ban đầu
+            updateOrderDetails(order, request, cart);
         }
+        var savedOrder = orderRepository.save(order);
 
-        // Lưu đơn hàng
-        return orderRepository.save(order);
-    }
+        // Cập nhật orderId vào giỏ hàng
+        cart.setOrderId(savedOrder.getId());
+        cartRepository.save(cart);
 
-    public Order updateOrderStatus(String orderId, String responseCode) {
-        // Tìm Order
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_EXIST));
-
-        // Xử lý trạng thái dựa trên responseCode
-        switch (responseCode) {
-            case "00": // Thanh toán thành công
-                order.setStatus(OrderStatus.COMPLETED);
-                break;
-            case "99": // Lỗi không xác định hoặc đang chờ xử lý
-                order.setStatus(OrderStatus.PENDING);
-                break;
-            default: // Các lỗi khác
-                order.setStatus(OrderStatus.CANCELLED);
-                break;
+        // Cập nhật orderId cho từng CartItem
+        for (CartItem cartItem : cart.getCartItems()) {
+            cartItem.setOrderId(savedOrder.getId());
+            cartItemRepository.save(cartItem);
         }
-
-        // Lưu Order
-        return orderRepository.save(order);
+//
+//            // Lưu đơn hàng và trả kết quả
+        return savedOrder;
+//        } catch (Exception ex) {
+//            log.error("Error occurred while creating the order: ", ex);
+//            throw new RuntimeException("An error occurred while processing your request.");
+//        }
     }
 
-    public List<Order> getAllOrders() {
-        return orderRepository.findAll();
+
+    private void updateOrderDetails(Order order, CreateOrderRequest request, Cart cart) {
+        order.setFirstname(request.getFirstname());
+        order.setLastname(request.getLastname());
+        order.setCountry(request.getCountry());
+        order.setAddress(request.getAddress());
+        order.setTown(request.getTown());
+        order.setState(request.getState());
+        order.setEmail(request.getEmail());
+        order.setPhone(request.getPhone());
+        order.setNote(request.getNote());
+        order.setPaymentmethod(request.getPaymentmethod());
+        order.setTotalPrice(cart.getTotalPrice());
+        order.setCreatedAt(LocalDateTime.now());
+        order.setStatus(OrderStatus.PENDING); // Cập nhật trạng thái
     }
+
+    public Void updateOrderStatus(String orderId, String vnp_TxnRef, OrderStatus status, String transactionId) {
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_EXIST));
+
+        // Cập nhật trạng thái đơn hàng và lưu mã giao dịch
+        order.setStatus(status);
+        order.setVnp_TxnRef(vnp_TxnRef);
+        order.setTransactionId(transactionId); // Lưu mã giao dịch VNPay
+        order.setPaymentDate(LocalDateTime.now()); // Lưu thời gian thanh toán
+        orderRepository.save(order); // Lưu thông tin cập nhật vào cơ sở dữ liệu
+        return null;
+    }
+
+
+
 //    // Xử lý thanh toán thành công
 //    public void handlePaymentSuccess(String orderId) {
 //        Order order = orderRepository.findById(orderId)

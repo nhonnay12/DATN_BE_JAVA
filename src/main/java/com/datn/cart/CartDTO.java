@@ -15,4 +15,5 @@ public class CartDTO {
     private long totalPrice;
     private int totalProducts;
     private List<CartItemDTO> cartItems;
+    private String orderId;
 }

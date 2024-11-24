@@ -26,6 +26,7 @@ SecurityConfig {
   private CustomJwtDecoder customJwtDecoder;
 
     private static final String[] PUBLIC_ENDPOINTS = {
+
             "/api/author",
             "/api/user",
             "/api/product/getProductPaging",
@@ -74,8 +75,7 @@ SecurityConfig {
 
         corsConfiguration.addAllowedOrigin("*");
         corsConfiguration.addAllowedMethod("*");
-        corsConfiguration.addAllowedHeader("*");
-
+        corsConfiguration.addAllowedHeader("*");   
         UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
         urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
 

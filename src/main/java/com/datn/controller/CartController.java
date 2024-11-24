@@ -60,9 +60,17 @@ public class CartController {
         // get list cartitem active
     }
 
+    @PutMapping()
+    public ApiResponse<Cart> updateCart(@RequestParam String orderId,@RequestParam String status) {
+
+        return ApiResponse.<Cart>builder()
+                .code(200)
+                .message("Remove to cart successfully")
+                .result(cartService.updateCartStatus(orderId, status))
+                .build();
+    }
     @GetMapping()
     public ApiResponse<CartDTO> getProductToCart() {
-
 
         return ApiResponse.<CartDTO>builder()
                 .code(200)
@@ -70,6 +78,7 @@ public class CartController {
                 .result(cartService.getProductToCart())
                 .build();
     }
+
 }
 // get all cart items for a user
 //    @GetMapping()

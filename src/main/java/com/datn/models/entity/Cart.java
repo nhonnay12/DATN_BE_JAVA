@@ -29,7 +29,9 @@ public class Cart {
     private List<CartItem> cartItems = new ArrayList<>();
 
     private long totalPrice;
-private int totalProducts;
+    private int totalProducts;
     // Getters và setters
     private String status;
+
+    private String orderId;
 }

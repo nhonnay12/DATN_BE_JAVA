@@ -103,6 +103,9 @@ public class UserServiceImpl implements UserService {
         if (request.getPhone() != null && !request.getPhone().equals(user.getPhone())) {
             user.setPhone(request.getPhone());
 
+        }if (request.getEmail() != null && !request.getEmail().equals(user.getEmail())) {
+            user.setEmail(request.getEmail());
+
         }
         // Cập nhật roles chỉ khi roles có thay đổi
         if (request.getRoles() != null && !request.getRoles().equals(user.getRoles())) {

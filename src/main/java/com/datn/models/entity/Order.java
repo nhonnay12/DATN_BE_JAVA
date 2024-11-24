@@ -7,8 +7,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -49,8 +51,13 @@ public class Order {
 
     private OrderStatus status;
 
-    @OneToOne
+    @OneToOne // Thay đổi thành @ManyToOne vì mỗi Order chỉ thuộc về một Cart
     @JoinColumn(name = "cart_id", referencedColumnName = "id")
-    private Cart cart;
+    private Cart cart;  // Quan hệ N-1 với Cart (mỗi Order có một Cart)
 
+    @CreatedDate  // Đánh dấu trường này để tự động gán thời gian tạo
+    private LocalDateTime createdAt;  // Trường thời gian tạo
+private  String transactionId;
+private String vnp_TxnRef;
+private LocalDateTime paymentDate;
 }

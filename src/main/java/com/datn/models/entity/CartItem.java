@@ -29,6 +29,7 @@ public class CartItem {
     @ManyToOne
     private Product product; // map vơi id của bảng product của bên product service
 
+    private String orderId;
     private int quantity;
     private long price;
     private String status;
