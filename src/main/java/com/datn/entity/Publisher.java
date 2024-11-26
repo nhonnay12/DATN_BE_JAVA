@@ -29,4 +29,5 @@ public class Publisher {
     @ManyToMany(mappedBy = "publisher")
     @JsonIgnore
     Set<Author> author;
+    private String status;
 }

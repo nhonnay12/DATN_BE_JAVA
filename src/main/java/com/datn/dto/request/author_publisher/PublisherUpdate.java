@@ -13,5 +13,5 @@ import org.hibernate.annotations.Filter;
 public class PublisherUpdate {
     int id;
     String address;
-    String phone;
+    String status;
 }

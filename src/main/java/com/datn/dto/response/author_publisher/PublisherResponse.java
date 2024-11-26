@@ -13,5 +13,5 @@ public class PublisherResponse {
     int id;
     String name;
     String address;
-    String phone;
+    String status;
 }

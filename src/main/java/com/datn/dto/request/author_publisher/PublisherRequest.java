@@ -12,6 +12,6 @@ import lombok.experimental.FieldDefaults;
 public class PublisherRequest {
     String name;
     String address;
-    String phone;
+    String status;
 }
 

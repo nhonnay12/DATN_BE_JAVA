@@ -24,6 +24,9 @@ public class CategoryServiceImpl implements CategoryService {
     private CategoryMapper categoryMapper;
     @Override
     public CategoryResponse createCategory(CategoryRequest request) {
+        if(categoryRepo.findByName(request.getName()).isPresent()){
+            throw new AppException(ErrorCode.Category_EXISTED);
+        }
         Category category = categoryMapper.toCategory(request);
         categoryRepo.save(category);
         return categoryMapper.toCategoryResponse(category);
@@ -31,7 +34,6 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<CategoryResponse> getAllCategory() {
-
         return categoryRepo.findAll().stream().map(categoryMapper::toCategoryResponse).toList();
     }
     @Override
@@ -40,12 +42,15 @@ public class CategoryServiceImpl implements CategoryService {
         category.setId(request.getId());
         category.setName(request.getName());
         category.setDescription(request.getDescription());
+        category.setStatus(request.getStatus());
         categoryRepo.save(category);
         return categoryMapper.toCategoryResponse(category);
     }
 
     @Override
     public void deleteCategory(Long id) {
-        categoryRepo.deleteById(id);
+        Category category = categoryRepo.findById(id).orElse(null);
+        category.setStatus("INACTIVE");
+        categoryRepo.save(category);
     }
 }

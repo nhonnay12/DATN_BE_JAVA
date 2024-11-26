@@ -46,7 +46,7 @@ public class PublisherServiceImpl implements PublisherService {
     public PublisherResponse updatePublisher(PublisherUpdate request) {
         var publisher = publisherRepo.findById(request.getId()).orElseThrow(() -> new AppException(ErrorCode.PUBLISHER_NOT_EXISTED));
         publisher.setId(request.getId());
-        publisher.setPhone(request.getPhone());
+        publisher.setStatus(request.getStatus());
         publisher.setAddress(request.getAddress());
 
         publisherRepo.save(publisher);
@@ -55,6 +55,8 @@ public class PublisherServiceImpl implements PublisherService {
 
     @Override
     public void deletePublisher(int id) {
-        publisherRepo.deleteById(id);
+        Publisher publisher = publisherRepo.findById(id).orElse(null);
+        publisher.setStatus("INACTIVE");
+        publisherRepo.save(publisher);
     }
 }

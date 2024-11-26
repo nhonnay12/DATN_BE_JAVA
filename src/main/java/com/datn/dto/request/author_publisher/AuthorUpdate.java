@@ -9,5 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 public class AuthorUpdate {
     private int id;
-    private String country;
+    private String name;
+    private String address;
+    private String status;
 }

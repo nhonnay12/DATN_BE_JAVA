@@ -47,6 +47,7 @@ public enum ErrorCode {
     PRODUCT_NOT_ACTIVE(1026, "PRODUCT_NOT_ACTIVE", HttpStatus.BAD_REQUEST),
     CARTITEMS_IS_NOT_PRODUCT_IN_CART(1027, "CARTITEMS_IS_NOT_PRODUCT_IN_CART", HttpStatus.BAD_REQUEST),
     EMAIL_SEND_FAILED(1028, "EMAIL_SEND_FAILED", HttpStatus.BAD_REQUEST),
+    Category_EXISTED(1029, "Category_EXISTED", HttpStatus.BAD_REQUEST),
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {

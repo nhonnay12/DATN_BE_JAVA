@@ -4,6 +4,7 @@ import com.datn.cart.CreateOrderRequest;
 
 import com.datn.cart.OrderHistoryResponse;
 import com.datn.cart.OrderService;
+import com.datn.cart.ListOrderResponse;
 import com.datn.dto.response.ApiResponse;
 
 import com.datn.entity.Order;
@@ -11,6 +12,7 @@ import com.datn.entity.OrderStatus;
 import com.datn.entity.User;
 import com.datn.service.impl.EmailServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -54,7 +56,15 @@ public class OrderController {
                 .build();
         return apiResponse;
     }
-
+    @GetMapping("/manage")
+    public ApiResponse<List<ListOrderResponse>> getlistOrder() {
+        ApiResponse<List<ListOrderResponse>> apiResponse = ApiResponse.<List<ListOrderResponse>>builder()
+                .code(200)
+                .message("Getall Order Success")
+                .result(orderService.getallOrder())
+                .build();
+        return apiResponse;
+    }
     @PostMapping("/send-email")
     public ApiResponse<User> sendOrderConfirmationEmail(@RequestParam String cartId) {
 

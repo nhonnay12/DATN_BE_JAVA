@@ -1,17 +1,16 @@
 package com.datn.cart;
 
-import com.datn.dto.response.ProductResponse;
 import com.datn.entity.*;
 
 import com.datn.exception.AppException;
 import com.datn.exception.ErrorCode;
 import com.datn.mapper.ProductMapper;
-import com.datn.mapper.ProductMapperImpl;
 import com.datn.repository.*;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -118,6 +117,40 @@ public class OrderService {
             );
         }).collect(Collectors.toList());
     }
+
+    public List<ListOrderResponse> getallOrder() {
+        // Lấy danh sách đơn hàng
+        List<Order> orders = orderRepository.findAll();
+
+        // Ánh xạ từ Order sang lisOrderResponse
+        return orders.stream().map(order -> {
+            // Tính tổng giá trị đơn hàng
+            Long totalOrderPrice =  order.getTotalPrice();
+
+            // Tạo danh sách chi tiết đơn hàng
+            List<OrderDetailResponse> detailResponses = order.getOrderDetailList().stream().map(detail -> {
+                Product product = detail.getProduct();
+                return new OrderDetailResponse(
+                        product.getName(),                 // Tên sản phẩm
+                        product.getQuantity(),              // Số lượng
+                        product.getPrice(),                // Giá mỗi sản phẩm
+                        product.getLinkDrive()
+                );
+            }).collect(Collectors.toList());
+            String maDonHang =order.getVnp_TxnRef();
+
+            return new ListOrderResponse(
+                    order.getPaymentDate(),                // Ngày tạo đơn hàng
+                    order.getPaymentmethod(),      // Phương thức thanh toán
+                    detailResponses,                    // Danh sách chi tiết đơn hàng
+                    totalOrderPrice,                   // Tổng giá trị đơn hàng
+                    order.getStatus(),
+                    maDonHang
+
+            );
+        }).collect(Collectors.toList());
+    }
+
     private void updateOrderDetails(Order order, CreateOrderRequest request, Cart cart) {
         order.setFirstname(request.getFirstname());
         order.setLastname(request.getLastname());

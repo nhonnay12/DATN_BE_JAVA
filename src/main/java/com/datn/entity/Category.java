@@ -20,4 +20,5 @@ public class Category {
             = "VARCHAR(255) COLLATE utf8mb4_unicode_ci")
     private String name;
     private String description;
+    private String status;
 }

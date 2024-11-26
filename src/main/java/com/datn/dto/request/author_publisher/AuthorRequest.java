@@ -9,6 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 public class AuthorRequest {
     private String name;
-    private String country;
+    private String address;
+    private String status;
 }
 

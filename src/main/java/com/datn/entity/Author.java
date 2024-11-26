@@ -24,8 +24,8 @@ public class Author {
     @Column(name = "name", unique = true, columnDefinition
             = "VARCHAR(255) COLLATE utf8mb4_unicode_ci")
     private String name;
-    private String country;
-
+    private String address;
+    private String status;
     @ManyToMany
     @JoinTable(
             name = "publisher_authors",

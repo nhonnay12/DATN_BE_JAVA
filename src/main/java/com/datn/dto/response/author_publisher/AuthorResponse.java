@@ -10,5 +10,6 @@ import lombok.*;
 public class AuthorResponse {
     private Long id;
     private String name;
-    private String country;
+    private String address;
+    private String status;
 }

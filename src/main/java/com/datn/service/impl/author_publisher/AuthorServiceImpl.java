@@ -45,14 +45,18 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public AuthorResponse updateAuthor(AuthorUpdate request) {
         var author = authorRepo.findById(request.getId()).orElseThrow(() -> new AppException(ErrorCode.AUTHOR_NOT_EXISTED));
+        author.setName(request.getName());
+        author.setAddress(request.getAddress());
         author.setId(request.getId());
-        author.setCountry(request.getCountry());
+        author.setStatus(request.getStatus());
         authorRepo.save(author);
         return authorMapper.toAuthorResponse(author);
     }
 
     @Override
     public void deleteAuthor(int id) {
-        authorRepo.deleteById(id);
+        Author author = authorRepo.findById(id).orElse(null);
+        author.setStatus("INACTIVE");
+        authorRepo.save(author);
     }
 }
