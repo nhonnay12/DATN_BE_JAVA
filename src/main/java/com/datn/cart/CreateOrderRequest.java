@@ -1,6 +1,6 @@
 package com.datn.cart;
 
-import com.datn.models.entity.OrderStatus;
+import com.datn.entity.OrderStatus;
 import lombok.*;
 
 @Getter

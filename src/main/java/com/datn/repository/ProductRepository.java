@@ -1,7 +1,7 @@
 package com.datn.repository;
 
 
-import com.datn.models.entity.Product;
+import com.datn.entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

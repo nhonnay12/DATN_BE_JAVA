@@ -1,8 +1,8 @@
 package com.datn.controller.account;
 
-import com.datn.models.dto.request.user_role.PermissionRequest;
-import com.datn.models.dto.response.ApiResponse;
-import com.datn.models.dto.response.PermissionResponse;
+import com.datn.dto.request.user_role.PermissionRequest;
+import com.datn.dto.response.ApiResponse;
+import com.datn.dto.response.PermissionResponse;
 import com.datn.service.PermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

@@ -1,14 +1,10 @@
 package com.datn.controller;
 
-import com.datn.models.dto.PageResponse;
-import com.datn.models.dto.RequestDTO;
-import com.datn.models.dto.response.ProductResponse;
-import com.datn.models.dto.response.author_publisher.AuthorResponse;
-import com.datn.models.entity.Author;
-import com.datn.models.entity.Product;
-import com.datn.models.mapper.AuthorMapper;
-import com.datn.models.mapper.ProductMapper;
-import com.datn.repository.AuthorRepo;
+import com.datn.dto.PageResponse;
+import com.datn.dto.RequestDTO;
+import com.datn.dto.response.ProductResponse;
+import com.datn.entity.Product;
+import com.datn.mapper.ProductMapper;
 import com.datn.repository.ProductRepository;
 import com.datn.service.impl.FilterSpecification;
 import org.springframework.beans.factory.annotation.Autowired;

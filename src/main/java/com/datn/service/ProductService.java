@@ -1,9 +1,9 @@
 package com.datn.service;
 
-import com.datn.models.dto.ProductPagingResponse;
-import com.datn.models.dto.request.product_cate_cart.ProductUpdate;
-import com.datn.models.dto.response.ProductResponse;
-import com.datn.models.dto.request.product_cate_cart.ProductRequest;
+import com.datn.dto.ProductPagingResponse;
+import com.datn.dto.request.product_cate_cart.ProductUpdate;
+import com.datn.dto.response.ProductResponse;
+import com.datn.dto.request.product_cate_cart.ProductRequest;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;

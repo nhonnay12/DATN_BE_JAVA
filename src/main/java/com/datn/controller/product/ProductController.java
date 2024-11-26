@@ -1,11 +1,11 @@
 package com.datn.controller.product;
 
 import com.datn.constant.PageParam;
-import com.datn.models.dto.ProductPagingResponse;
-import com.datn.models.dto.request.product_cate_cart.ProductRequest;
-import com.datn.models.dto.request.product_cate_cart.ProductUpdate;
-import com.datn.models.dto.response.ApiResponse;
-import com.datn.models.dto.response.ProductResponse;
+import com.datn.dto.ProductPagingResponse;
+import com.datn.dto.request.product_cate_cart.ProductRequest;
+import com.datn.dto.request.product_cate_cart.ProductUpdate;
+import com.datn.dto.response.ApiResponse;
+import com.datn.dto.response.ProductResponse;
 import com.datn.service.ProductService;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.beans.factory.annotation.Autowired;

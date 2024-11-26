@@ -1,13 +1,13 @@
 package com.datn.service.impl;
 
-import com.datn.models.dto.request.authen_request.*;
-import com.datn.models.dto.request.user_role.UserCreationRequest;
-import com.datn.models.dto.response.AuthenticationResponse;
-import com.datn.models.dto.response.IntrospectResponse;
-import com.datn.models.entity.InvalidatedToken;
-import com.datn.models.entity.User;
-import com.datn.models.exception.AppException;
-import com.datn.models.exception.ErrorCode;
+import com.datn.dto.request.authen_request.*;
+import com.datn.dto.request.user_role.UserCreationRequest;
+import com.datn.dto.response.AuthenticationResponse;
+import com.datn.dto.response.IntrospectResponse;
+import com.datn.entity.InvalidatedToken;
+import com.datn.entity.User;
+import com.datn.exception.AppException;
+import com.datn.exception.ErrorCode;
 import com.datn.repository.InvalidatedTokenRepository;
 import com.datn.repository.UserRepository;
 import com.nimbusds.jose.*;
@@ -30,7 +30,6 @@ import org.springframework.util.CollectionUtils;
 
 import java.text.ParseException;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
@@ -204,7 +203,7 @@ public class AuthenticationServiceImpl {
                // .verificationCode(generateVerificationCode())
                 //.verificationCodeExpiresAt(LocalDateTime.now().plusMinutes(15))
                 //.enabled(false)
-                .status("ACTIVE")
+                //.status("ACTIVE")
                 .build();
         sendVerificationEmail(user);
         return userRepository.save(user);

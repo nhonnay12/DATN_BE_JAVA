@@ -2,9 +2,9 @@ package com.datn.service;
 
 
 
-import com.datn.models.dto.request.product_cate_cart.CategoryRequest;
-import com.datn.models.dto.request.product_cate_cart.CategoryUpdate;
-import com.datn.models.dto.response.CategoryResponse;
+import com.datn.dto.request.product_cate_cart.CategoryRequest;
+import com.datn.dto.request.product_cate_cart.CategoryUpdate;
+import com.datn.dto.response.CategoryResponse;
 
 import java.util.List;
 

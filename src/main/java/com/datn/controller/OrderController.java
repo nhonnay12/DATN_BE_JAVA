@@ -4,21 +4,15 @@ import com.datn.cart.CreateOrderRequest;
 
 import com.datn.cart.OrderHistoryResponse;
 import com.datn.cart.OrderService;
-import com.datn.models.dto.request.Order_Payment.OrderRequest;
-import com.datn.models.dto.response.ApiResponse;
-import com.datn.models.dto.response.order_payment.OrderResponse;
+import com.datn.dto.response.ApiResponse;
 
-import com.datn.models.entity.Order;
-import com.datn.models.entity.OrderStatus;
-import com.datn.models.entity.User;
-import com.datn.models.exception.AppException;
+import com.datn.entity.Order;
+import com.datn.entity.OrderStatus;
+import com.datn.entity.User;
 import com.datn.service.impl.EmailServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.testcontainers.shaded.org.checkerframework.checker.units.qual.A;
 
-import java.awt.print.Pageable;
 import java.util.List;
 
 @RestController
@@ -51,15 +45,15 @@ public class OrderController {
         orderService.updateOrderStatus(orderId,vnp_TxnRef, OrderStatus.COMPLETED, transactionId);
         return apiResponse;
     }
-//    @GetMapping
-//    public ApiResponse<List<OrderHistoryResponse>> getHistoryOrder() {
-//        ApiResponse<List<OrderHistoryResponse>> apiResponse = ApiResponse.<List<OrderHistoryResponse>>builder()
-//                .code(200)
-//                .message("Getall Order Success")
-//                .result(orderService.getHistoryOrders())
-//                .build();
-//        return apiResponse;
-//    }
+    @GetMapping("/history")
+    public ApiResponse<List<OrderHistoryResponse>> getHistoryOrder() {
+        ApiResponse<List<OrderHistoryResponse>> apiResponse = ApiResponse.<List<OrderHistoryResponse>>builder()
+                .code(200)
+                .message("Getall Order Success")
+                .result(orderService.getOrderHistory())
+                .build();
+        return apiResponse;
+    }
 
     @PostMapping("/send-email")
     public ApiResponse<User> sendOrderConfirmationEmail(@RequestParam String cartId) {

@@ -1,12 +1,12 @@
 package com.datn.service.impl.author_publisher;
 
-import com.datn.models.dto.request.author_publisher.PublisherRequest;
-import com.datn.models.dto.request.author_publisher.PublisherUpdate;
-import com.datn.models.dto.response.author_publisher.PublisherResponse;
-import com.datn.models.entity.Publisher;
-import com.datn.models.exception.AppException;
-import com.datn.models.exception.ErrorCode;
-import com.datn.models.mapper.PublisherMapper;
+import com.datn.dto.request.author_publisher.PublisherRequest;
+import com.datn.dto.request.author_publisher.PublisherUpdate;
+import com.datn.dto.response.author_publisher.PublisherResponse;
+import com.datn.entity.Publisher;
+import com.datn.exception.AppException;
+import com.datn.exception.ErrorCode;
+import com.datn.mapper.PublisherMapper;
 import com.datn.repository.PublisherRepo;
 
 import com.datn.service.PublisherService;

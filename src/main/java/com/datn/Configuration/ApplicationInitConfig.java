@@ -1,8 +1,8 @@
 package com.datn.Configuration;
 
 import com.datn.constant.ConstantRole;
-import com.datn.models.entity.Role;
-import com.datn.models.entity.User;
+import com.datn.entity.Role;
+import com.datn.entity.User;
 import com.datn.repository.RoleRepository;
 import com.datn.repository.UserRepository;
 import org.springframework.boot.ApplicationRunner;

@@ -1,12 +1,11 @@
 package com.datn.service.impl;
 
-import com.datn.models.entity.ImageData;
-import com.datn.models.exception.AppException;
-import com.datn.models.exception.ErrorCode;
+import com.datn.entity.ImageData;
+import com.datn.exception.AppException;
+import com.datn.exception.ErrorCode;
 import com.datn.repository.ImageRepo;
 import com.datn.service.ImageService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 

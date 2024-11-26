@@ -1,11 +1,11 @@
 package com.datn.service.impl;
 
-import com.datn.models.entity.Permission;
-import com.datn.models.exception.AppException;
-import com.datn.models.exception.ErrorCode;
-import com.datn.models.mapper.PermissionMapper;
-import com.datn.models.dto.request.user_role.PermissionRequest;
-import com.datn.models.dto.response.PermissionResponse;
+import com.datn.entity.Permission;
+import com.datn.exception.AppException;
+import com.datn.exception.ErrorCode;
+import com.datn.mapper.PermissionMapper;
+import com.datn.dto.request.user_role.PermissionRequest;
+import com.datn.dto.response.PermissionResponse;
 import com.datn.repository.PermissionRepository;
 import com.datn.service.PermissionService;
 import org.springframework.beans.factory.annotation.Autowired;

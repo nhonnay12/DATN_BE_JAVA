@@ -1,10 +1,9 @@
 package com.datn.service.impl;
 
-import com.datn.models.entity.CartItem;
-import com.datn.models.entity.Product;
-import com.datn.models.entity.User;
-import com.datn.models.exception.AppException;
-import com.datn.models.exception.ErrorCode;
+import com.datn.entity.CartItem;
+import com.datn.entity.User;
+import com.datn.exception.AppException;
+import com.datn.exception.ErrorCode;
 import com.datn.repository.CartItemRepository;
 import com.datn.repository.ProductRepository;
 import com.datn.repository.UserRepository;

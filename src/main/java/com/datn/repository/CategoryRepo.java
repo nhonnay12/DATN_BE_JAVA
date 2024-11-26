@@ -1,7 +1,6 @@
 package com.datn.repository;
 
-import com.datn.models.entity.Category;
-import lombok.RequiredArgsConstructor;
+import com.datn.entity.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

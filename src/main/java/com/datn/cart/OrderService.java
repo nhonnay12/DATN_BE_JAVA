@@ -1,26 +1,22 @@
 package com.datn.cart;
 
-import com.datn.models.entity.*;
-import com.datn.models.exception.AppException;
-import com.datn.models.exception.ErrorCode;
-import com.datn.repository.CartItemRepository;
-import com.datn.repository.CartRepository;
-import com.datn.repository.OrderRepository;
-import com.datn.repository.UserRepository;
+import com.datn.dto.response.ProductResponse;
+import com.datn.entity.*;
+
+import com.datn.exception.AppException;
+import com.datn.exception.ErrorCode;
+import com.datn.mapper.ProductMapper;
+import com.datn.mapper.ProductMapperImpl;
+import com.datn.repository.*;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.connector.ClientAbortException;
-import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.awt.print.Pageable;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,6 +30,8 @@ public class OrderService {
     OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final CartItemRepository cartItemRepository;
+    OrderDetailRepo orderDetailRepository;
+    private final ProductMapper productMapper;
 
     public Order createOrderFromCart(CreateOrderRequest request) {
         // Lấy thông tin người dùng từ SecurityContextHolder
@@ -44,8 +42,7 @@ public class OrderService {
         log.info("Searching for Cart with userId: {} and status: {}", userId, "ACTIVE");
 
         // Tìm giỏ hàng đang hoạt động của người dùng
-        Cart cart = cartRepository.findByUserIdAndStatus(userId, "ACTIVE")
-                .orElseThrow(() -> new AppException(ErrorCode.CART_NOT_EXITS));
+        Cart cart = cartRepository.findByUserIdAndStatus(user.getId(), "ACTIVE").orElseThrow(() -> new AppException(ErrorCode.CART_NOT_EXITS));
 
         // Lọc các CartItems có trạng thái là ACTIVE
         cart.setCartItems(cart.getCartItems().stream()
@@ -71,21 +68,56 @@ public class OrderService {
         cart.setOrderId(savedOrder.getId());
         cartRepository.save(cart);
 
-        // Cập nhật orderId cho từng CartItem
         for (CartItem cartItem : cart.getCartItems()) {
-            cartItem.setOrderId(savedOrder.getId());
-            cartItemRepository.save(cartItem);
+            OrderDetail orderDetail = new OrderDetail();
+            orderDetail.setOrder(order); // Liên kết Order với OrderDetail
+            orderDetail.setProduct(cartItem.getProduct()); // Liên kết Product với OrderDetail
+            orderDetail.setQuantity(cartItem.getQuantity());
+            orderDetail.setPrice((double)cartItem.getPrice()); // Lưu giá sản phẩm tại thời điểm đặt hàng
+            orderDetailRepository.save(orderDetail); // Lưu OrderDetail
         }
-//
-//            // Lưu đơn hàng và trả kết quả
+
+
+
+
+
         return savedOrder;
-//        } catch (Exception ex) {
-//            log.error("Error occurred while creating the order: ", ex);
-//            throw new RuntimeException("An error occurred while processing your request.");
-//        }
+
     }
 
+    // Order History
+    public List<OrderHistoryResponse> getOrderHistory() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = userRepository.findByUsername(authentication.getName())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        String userId = user.getId(); // Lấy userId từ SecurityContextHolder
+        // Lấy danh sách đơn hàng đã hoàn thành của người dùng
+        List<Order> orders = orderRepository.findByUserIdAndStatus(userId, OrderStatus.COMPLETED);
 
+        // Ánh xạ từ Order sang OrderHistoryResponse
+        return orders.stream().map(order -> {
+            // Tính tổng giá trị đơn hàng
+            Double totalOrderPrice = (double) order.getTotalPrice();
+
+            // Tạo danh sách chi tiết đơn hàng
+            List<OrderDetailResponse> detailResponses = order.getOrderDetailList().stream().map(detail -> {
+                Product product = detail.getProduct();
+                return new OrderDetailResponse(
+                        product.getName(),                 // Tên sản phẩm
+                        product.getQuantity(),              // Số lượng
+                        product.getPrice(),                // Giá mỗi sản phẩm
+                        product.getLinkDrive()
+                );
+            }).collect(Collectors.toList());
+
+            return new OrderHistoryResponse(
+                    order.getPaymentDate(),                // Ngày tạo đơn hàng
+                    order.getPaymentmethod(),      // Phương thức thanh toán
+                    detailResponses,                    // Danh sách chi tiết đơn hàng
+                    totalOrderPrice                     // Tổng giá trị đơn hàng
+            );
+        }).collect(Collectors.toList());
+    }
     private void updateOrderDetails(Order order, CreateOrderRequest request, Cart cart) {
         order.setFirstname(request.getFirstname());
         order.setLastname(request.getLastname());
@@ -111,10 +143,26 @@ public class OrderService {
         order.setTransactionId(transactionId); // Lưu mã giao dịch VNPay
         order.setPaymentDate(LocalDateTime.now()); // Lưu thời gian thanh toán
         orderRepository.save(order); // Lưu thông tin cập nhật vào cơ sở dữ liệu
+        // viet them vao day update order detail
         return null;
     }
+//    public OrderDetailDto  updateOrderDetail(){
+//
+//    }
 
-
+//public OrderHistoryResponse getOrderHistory(String orderId) {
+//    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//    User user = userRepository.findByUsername(authentication.getName())
+//            .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+//    String userId = user.getId(); // Lấy userId từ SecurityContextHolder
+//        OrderHistoryResponse orderHistoryResponse = new OrderHistoryResponse();
+//        List<Order> Orders = orderRepository.findByUserIdAndStatus(userId, OrderStatus.COMPLETED);
+//        for(Order order : Orders) {
+//            orderHistoryResponse.setProduct(order.getCart().getCartItems()
+//                    .stream()
+//                    .filter(cartItem -> cartItem.getProduct()).collect(Collectors.toCollection()));
+//        }
+//}
 
 //    // Xử lý thanh toán thành công
 //    public void handlePaymentSuccess(String orderId) {

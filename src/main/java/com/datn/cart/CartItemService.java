@@ -1,8 +1,8 @@
 package com.datn.cart;
 
-import com.datn.models.entity.CartItem;
-import com.datn.models.exception.AppException;
-import com.datn.models.exception.ErrorCode;
+import com.datn.entity.CartItem;
+import com.datn.exception.AppException;
+import com.datn.exception.ErrorCode;
 import com.datn.repository.CartItemRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,9 +18,9 @@ public class CartItemService {
     @Autowired
     private CartItemRepository cartItemRepository;
 
-    public Void updateCartItemsStatus(String orderId, String status) {
-        List<CartItem> cartItems = cartItemRepository.findByOrderIdAndStatus(orderId, "ACTIVE");
-log.info(cartItems.toString());
+    public Void updateCartItemsStatus(String cartId, String status) {
+        List<CartItem> cartItems = cartItemRepository.findByCartIdAndStatus(cartId, "ACTIVE");
+    log.info(cartItems.toString());
         if (cartItems.isEmpty()) {
             throw new AppException(ErrorCode.CARTITEMS_IS_NOT_PRODUCT_IN_CART);
         }

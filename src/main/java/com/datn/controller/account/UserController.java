@@ -1,15 +1,13 @@
 package com.datn.controller.account;
 
 import com.datn.constant.PageParam;
-import com.datn.models.dto.ProductPagingResponse;
-import com.datn.models.dto.request.user_role.UserCreationRequest;
-import com.datn.models.dto.request.user_role.UserUpdateRequest;
-import com.datn.models.dto.response.ApiResponse;
-import com.datn.models.dto.response.UserPagingResponse;
-import com.datn.models.dto.response.UserResponse;
-import com.datn.models.entity.User;
-import com.datn.models.exception.AppException;
-import com.datn.models.exception.ErrorCode;
+import com.datn.dto.request.user_role.UserCreationRequest;
+import com.datn.dto.request.user_role.UserUpdateRequest;
+import com.datn.dto.response.ApiResponse;
+import com.datn.dto.response.UserPagingResponse;
+import com.datn.dto.response.UserResponse;
+import com.datn.exception.AppException;
+import com.datn.exception.ErrorCode;
 import com.datn.service.UserService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;

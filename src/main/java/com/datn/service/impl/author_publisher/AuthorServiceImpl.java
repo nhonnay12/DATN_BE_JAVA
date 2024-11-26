@@ -2,23 +2,16 @@ package com.datn.service.impl.author_publisher;
 
 
 
-import com.datn.models.dto.request.author_publisher.AuthorRequest;
-import com.datn.models.dto.request.author_publisher.AuthorUpdate;
-import com.datn.models.dto.request.author_publisher.PublisherRequest;
-import com.datn.models.dto.request.author_publisher.PublisherUpdate;
-import com.datn.models.dto.response.author_publisher.AuthorResponse;
-import com.datn.models.dto.response.author_publisher.PublisherResponse;
-import com.datn.models.entity.Author;
-import com.datn.models.entity.Publisher;
-import com.datn.models.exception.AppException;
-import com.datn.models.exception.ErrorCode;
-import com.datn.models.mapper.AuthorMapper;
-import com.datn.models.mapper.PublisherMapper;
+import com.datn.dto.request.author_publisher.AuthorRequest;
+import com.datn.dto.request.author_publisher.AuthorUpdate;
+import com.datn.dto.response.author_publisher.AuthorResponse;
+import com.datn.entity.Author;
+import com.datn.exception.AppException;
+import com.datn.exception.ErrorCode;
+import com.datn.mapper.AuthorMapper;
 import com.datn.repository.AuthorRepo;
-import com.datn.repository.PublisherRepo;
 
 import com.datn.service.AuthorService;
-import com.datn.service.PublisherService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -1,10 +1,10 @@
 package com.datn.controller;
-import com.datn.models.dto.request.authen_request.*;
-import com.datn.models.dto.request.user_role.UserCreationRequest;
-import com.datn.models.dto.response.ApiResponse;
-import com.datn.models.dto.response.AuthenticationResponse;
-import com.datn.models.dto.response.IntrospectResponse;
-import com.datn.models.entity.User;
+import com.datn.dto.request.authen_request.*;
+import com.datn.dto.request.user_role.UserCreationRequest;
+import com.datn.dto.response.ApiResponse;
+import com.datn.dto.response.AuthenticationResponse;
+import com.datn.dto.response.IntrospectResponse;
+import com.datn.entity.User;
 import com.datn.service.impl.AuthenticationServiceImpl;
 import com.nimbusds.jose.JOSEException;
 import jakarta.validation.Valid;

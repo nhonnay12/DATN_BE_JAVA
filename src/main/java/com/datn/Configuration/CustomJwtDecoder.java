@@ -1,5 +1,5 @@
 package com.datn.Configuration;
-import com.datn.models.dto.request.authen_request.IntrospectRequest;
+import com.datn.dto.request.authen_request.IntrospectRequest;
 import com.datn.service.impl.AuthenticationServiceImpl;
 import com.nimbusds.jose.JOSEException;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,10 +1,9 @@
 package com.datn.service;
 
-import com.datn.models.dto.ProductPagingResponse;
-import com.datn.models.dto.request.user_role.UserUpdateRequest;
-import com.datn.models.dto.response.UserPagingResponse;
-import com.datn.models.dto.response.UserResponse;
-import com.datn.models.dto.request.user_role.UserCreationRequest;
+import com.datn.dto.request.user_role.UserUpdateRequest;
+import com.datn.dto.response.UserPagingResponse;
+import com.datn.dto.response.UserResponse;
+import com.datn.dto.request.user_role.UserCreationRequest;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;

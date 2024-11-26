@@ -1,8 +1,6 @@
 package com.datn.service;
 
-import com.datn.models.entity.ImageData;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
+import com.datn.entity.ImageData;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;

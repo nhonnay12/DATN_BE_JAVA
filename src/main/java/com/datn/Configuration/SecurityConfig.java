@@ -26,7 +26,6 @@ SecurityConfig {
   private CustomJwtDecoder customJwtDecoder;
 
     private static final String[] PUBLIC_ENDPOINTS = {
-
             "/api/author",
             "/api/user",
             "/api/product/getProductPaging",

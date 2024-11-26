@@ -1,13 +1,13 @@
 package com.datn.cart;
 
-import com.datn.models.entity.Cart;
-import com.datn.models.entity.CartItem;
-import com.datn.models.entity.Product;
-import com.datn.models.entity.User;
-import com.datn.models.exception.AppException;
-import com.datn.models.exception.ErrorCode;
+import com.datn.entity.Cart;
+import com.datn.entity.CartItem;
+import com.datn.entity.Product;
+import com.datn.entity.User;
+import com.datn.exception.AppException;
+import com.datn.exception.ErrorCode;
 
-import com.datn.models.mapper.CartMapper;
+import com.datn.mapper.CartMapper;
 import com.datn.repository.CartItemRepository;
 import com.datn.repository.CartRepository;
 import com.datn.repository.ProductRepository;
@@ -20,8 +20,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.testcontainers.shaded.org.checkerframework.checker.units.qual.C;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -39,67 +39,62 @@ public class CartService {
     private final UserRepository userRepository;
 
     // Thêm sản phẩm vào giỏ hàng
-    public CartDTO addItemToCart(Long productId) {
+    public Void addItemToCart(Long productId) {
+        // Lấy thông tin người dùng từ SecurityContext
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = userRepository.findByUsername(authentication.getName()).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-        String userId = user.getId(); // lấy userId từ header
+        User user = userRepository.findByUsername(authentication.getName())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
-        // Tìm giỏ hàng với trạng thái ACTIVE cho người dùng
-        Cart cart = cartRepository.findByUserIdAndStatus(userId, "ACTIVE")
-                .orElseGet(() -> {
-                    Cart newCart = new Cart();
-                    newCart.setUserId(userId);
-                    newCart.setStatus("ACTIVE");  // Tạo giỏ hàng mới với trạng thái ACTIVE
-                    return cartRepository.save(newCart);
-                });
-
-        // Lọc các CartItem có trạng thái ACTIVE
-//        List<CartItem> activeCartItems = cart.getCartItems().stream()
-//                .filter(item -> "ACTIVE".equals(item.getStatus()))
-//                .collect(Collectors.toList());
+        // Tìm giỏ hàng ACTIVE của người dùng
+        Cart cart = cartRepository.findByUserIdAndStatus(user.getId(), "ACTIVE").orElseGet(() -> {
+            Cart newCart = new Cart();
+            newCart.setUser(user);
+            newCart.setStatus("ACTIVE");
+            newCart.setCartItems(new ArrayList<>()); // Đảm bảo danh sách CartItems không bị null
+            return newCart;
+        });
 
         // Lấy thông tin sản phẩm từ Product
-        Product product = productRepository.findById(productId).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
-        double productPrice = product.getPrice();
-        int quantity = 1;  // Số lượng mặc định là 1
-        long totalPrice = (long) productPrice * quantity;
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
 
         // Kiểm tra xem sản phẩm đã có trong giỏ hàng hay chưa
-        Optional<CartItem> existingCartItem = cart.getCartItems().stream().filter(cartItem -> cartItem.getProduct().getId().equals(productId) && "ACTIVE".equals(cartItem.getStatus())).findFirst();
+        Optional<CartItem> existingCartItem = cart.getCartItems().stream()
+                .filter(cartItem -> cartItem.getProduct().getId().equals(productId) && "ACTIVE".equals(cartItem.getStatus()))
+                .findFirst();
 
         if (existingCartItem.isPresent()) {
             throw new AppException(ErrorCode.PRODUCT_EXISTED_TO_CART);
-        } else {
-            // Nếu chưa có, thêm mới sản phẩm vào giỏ hàng
-            CartItem cartItem = new CartItem();
-            cartItem.setCart(cart);
-            cartItem.setProduct(product);
-            cartItem.setQuantity(quantity);
-            cartItem.setPrice(totalPrice);  // Thiết lập giá cho sản phẩm
-            cartItem.setStatus("ACTIVE");
-            cart.getCartItems().add(cartItem);
         }
 
-        // Cập nhật tổng giá của giỏ hàng
+        // Nếu sản phẩm chưa có, thêm mới vào giỏ hàng
+        int quantity = 1; // Số lượng mặc định
+        double productPrice = product.getPrice();
+        long totalPrice = (long) productPrice * quantity;
+
+        CartItem newCartItem = new CartItem();
+        newCartItem.setCart(cart);
+        newCartItem.setProduct(product);
+        newCartItem.setQuantity(quantity);
+        newCartItem.setPrice(totalPrice);
+        newCartItem.setStatus("ACTIVE");
+
+        cart.getCartItems().add(newCartItem);
+
+        // Cập nhật tổng giá và tổng số lượng sản phẩm của giỏ hàng
         cart.setTotalPrice(cart.getCartItems().stream()
                 .filter(cartItem -> "ACTIVE".equals(cartItem.getStatus()))
                 .mapToLong(CartItem::getPrice)
                 .sum());
-        //
+
         cart.setTotalProducts(cart.getCartItems().stream()
                 .filter(cartItem -> "ACTIVE".equals(cartItem.getStatus()))
                 .mapToInt(CartItem::getQuantity)
                 .sum());
-        log.info("Cart Items Before: " + cart.getCartItems());
-        log.info("Cart Items After: " + cart.getCartItems());
-        log.info("Total Products: " + cart.getTotalProducts());
-        // lay cartitem - active
-        List<CartItem> activeCartItems = cart.getCartItems().stream()
-                .filter(cartItem -> "ACTIVE".equals(cartItem.getStatus()))
-                .collect(Collectors.toList());
-        cart.setCartItems(activeCartItems);
-
-        return CartMapper.toCartDTO(cartRepository.save(cart)); // Trả về DTO thay vì entity
+        cartRepository.save(cart);
+        // Lưu giỏ hàng và trả về DTO
+      //  return CartMapper.toCartDTO(cartRepository.save(cart));
+        return null;
     }
 
     public CartDTO removeItemFromCart(Long productId) {
@@ -108,13 +103,12 @@ public class CartService {
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         String userId = user.getId();
 
-        Cart cart = cartRepository.findByUserIdAndStatus(userId, "ACTIVE")
-                .orElseThrow(() -> new AppException(ErrorCode.CART_NOT_EXITS));
+        Cart cart = cartRepository.findByUserIdAndStatus(user.getId(), "ACTIVE").orElseThrow(() -> new AppException(ErrorCode.CART_NOT_EXITS));
 
         // Tìm kiếm sản phẩm trong giỏ hàng
         Optional<CartItem> cartItemOptional = cart.getCartItems().stream()
                 .filter(cartItem -> cartItem.getProduct().getId().equals(productId))
-                .filter(cartItem -> "ACTIVE".equals(cartItem.getStatus()))
+               .filter(cartItem -> "ACTIVE".equals(cartItem.getStatus()))
                 .findFirst();
 
         if (cartItemOptional.isPresent()) {
@@ -171,11 +165,11 @@ public class CartService {
     public CartDTO getProductToCart() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userRepository.findByUsername(authentication.getName()).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-        String userId = user.getId(); // lấy userId từ header
+        //String userId = user.getId(); // lấy userId từ header
 
         // Tìm giỏ hàng với trạng thái ACTIVE cho người dùng
-        Cart cart = cartRepository.findByUserIdAndStatus(userId, "ACTIVE")
-                .orElseThrow(() -> new AppException(ErrorCode.CART_NOT_EXITS));
+        Cart cart = cartRepository.findByUserIdAndStatus(user.getId(), "ACTIVE").orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+                //.orElseThrow(() -> new AppException(ErrorCode.CART_NOT_EXITS));
 
         // lay cartitem - active
         List<CartItem> activeCartItems = cart.getCartItems().stream()
@@ -186,7 +180,7 @@ public class CartService {
 
         return CartMapper.toCartDTO(cartRepository.save(cart));
     }
-    
+
 }
 
 // Cập nhật số lượng cho sản phẩm

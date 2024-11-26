@@ -1,16 +1,16 @@
 package com.datn.service.impl;
 
 import com.datn.constant.ConstantRole;
-import com.datn.models.dto.request.user_role.UserCreationRequest;
-import com.datn.models.dto.request.user_role.UserUpdateRequest;
-import com.datn.models.dto.response.UserPagingResponse;
-import com.datn.models.dto.response.UserResponse;
-import com.datn.models.entity.ImageData;
-import com.datn.models.entity.Role;
-import com.datn.models.entity.User;
-import com.datn.models.exception.AppException;
-import com.datn.models.exception.ErrorCode;
-import com.datn.models.mapper.UserMapper;
+import com.datn.dto.request.user_role.UserCreationRequest;
+import com.datn.dto.request.user_role.UserUpdateRequest;
+import com.datn.dto.response.UserPagingResponse;
+import com.datn.dto.response.UserResponse;
+import com.datn.entity.ImageData;
+import com.datn.entity.Role;
+import com.datn.entity.User;
+import com.datn.exception.AppException;
+import com.datn.exception.ErrorCode;
+import com.datn.mapper.UserMapper;
 import com.datn.repository.ImageRepo;
 import com.datn.repository.RoleRepository;
 import com.datn.repository.UserRepository;
@@ -60,7 +60,6 @@ public class UserServiceImpl implements UserService {
         if (user.getRoles() != null && !user.getRoles().isEmpty()) {
             HashSet<Role> roles = new HashSet<>();
             roleRepository.findById(request.getRoles()).ifPresent(roles::add);
-
             user.setRoles(roles);
         } else {
             HashSet<Role> roles = new HashSet<>();

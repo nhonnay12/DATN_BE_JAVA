@@ -1,10 +1,10 @@
 package com.datn.controller.product;
 
 
-import com.datn.models.dto.request.author_publisher.AuthorRequest;
-import com.datn.models.dto.request.author_publisher.AuthorUpdate;
-import com.datn.models.dto.response.ApiResponse;
-import com.datn.models.dto.response.author_publisher.AuthorResponse;
+import com.datn.dto.request.author_publisher.AuthorRequest;
+import com.datn.dto.request.author_publisher.AuthorUpdate;
+import com.datn.dto.response.ApiResponse;
+import com.datn.dto.response.author_publisher.AuthorResponse;
 import com.datn.service.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

@@ -1,7 +1,7 @@
 package com.datn.Configuration;
 
-import com.datn.models.dto.response.ApiResponse;
-import com.datn.models.exception.ErrorCode;
+import com.datn.dto.response.ApiResponse;
+import com.datn.exception.ErrorCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

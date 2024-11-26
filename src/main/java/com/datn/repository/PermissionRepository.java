@@ -1,6 +1,6 @@
 package com.datn.repository;
 
-import com.datn.models.entity.Permission;
+import com.datn.entity.Permission;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,6 +1,6 @@
 package com.datn.cart;
 
-import com.datn.models.entity.Product;
+import com.datn.entity.Product;
 import lombok.*;
 
 @Builder

@@ -2,21 +2,13 @@ package com.datn.controller;
 
 import com.datn.cart.CartDTO;
 import com.datn.cart.CartService;
-import com.datn.models.dto.AddToCart;
-import com.datn.models.dto.CartDto;
-import com.datn.models.dto.response.ApiResponse;
-import com.datn.models.entity.Cart;
-import com.datn.models.entity.Product;
-import com.datn.models.entity.User;
-import com.datn.models.exception.AppException;
-import com.datn.models.exception.ErrorCode;
+import com.datn.dto.AddToCart;
+import com.datn.dto.response.ApiResponse;
+import com.datn.entity.Cart;
 import com.datn.repository.ProductRepository;
 import com.datn.repository.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -33,17 +25,17 @@ public class CartController {
 
     // post cart api
     @PostMapping("/add")
-    public ApiResponse<CartDTO> addToCart(@RequestBody AddToCart addToCartDto) {
+    public ApiResponse<Void> addToCart(@RequestBody AddToCart addToCartDto) {
 
         //var context = SecurityContextHolder.getContext();
         //String name = context.getAuthentication().getName();
         //User user = userRepository.findByUsername(name).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        cartService.addItemToCart(addToCartDto.getProduct_id());
 
-
-        return ApiResponse.<CartDTO>builder()
+        return ApiResponse.<Void>builder()
                 .code(200)
                 .message("Thêm vào giỏ hàng thành công")
-                .result(cartService.addItemToCart(addToCartDto.getProduct_id()))
+               // .result(cartService.addItemToCart(addToCartDto.getProduct_id()))
                 .build();
     }
 
@@ -61,7 +53,7 @@ public class CartController {
     }
 
     @PutMapping()
-    public ApiResponse<Cart> updateCart(@RequestParam String orderId,@RequestParam String status) {
+    public ApiResponse<Cart> updateCart(@RequestParam String orderId, @RequestParam String status) {
 
         return ApiResponse.<Cart>builder()
                 .code(200)

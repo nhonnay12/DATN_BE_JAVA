@@ -3,9 +3,9 @@ package com.datn.service;
 
 
 
-import com.datn.models.dto.request.author_publisher.PublisherRequest;
-import com.datn.models.dto.request.author_publisher.PublisherUpdate;
-import com.datn.models.dto.response.author_publisher.PublisherResponse;
+import com.datn.dto.request.author_publisher.PublisherRequest;
+import com.datn.dto.request.author_publisher.PublisherUpdate;
+import com.datn.dto.response.author_publisher.PublisherResponse;
 
 import java.util.List;
 

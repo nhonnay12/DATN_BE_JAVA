@@ -1,14 +1,14 @@
 package com.datn.service.impl;
 
-import com.datn.models.dto.response.RoleResponse;
-import com.datn.models.entity.Role;
-import com.datn.models.exception.AppException;
-import com.datn.models.mapper.RoleMapper;
+import com.datn.dto.response.RoleResponse;
+import com.datn.entity.Role;
+import com.datn.exception.AppException;
+import com.datn.mapper.RoleMapper;
 import com.datn.repository.PermissionRepository;
 import com.datn.repository.RoleRepository;
 import com.datn.service.RoleService;
-import com.datn.models.dto.request.user_role.RoleRequest;
-import com.datn.models.exception.ErrorCode;
+import com.datn.dto.request.user_role.RoleRequest;
+import com.datn.exception.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

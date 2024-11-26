@@ -1,8 +1,6 @@
 package com.datn.payment.vnpay;
 
-import com.datn.cart.OrderService;
-import com.datn.models.dto.response.ApiResponse;
-import com.datn.models.entity.OrderStatus;
+import com.datn.dto.response.ApiResponse;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

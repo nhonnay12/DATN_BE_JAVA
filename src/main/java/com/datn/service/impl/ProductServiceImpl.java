@@ -1,17 +1,16 @@
 package com.datn.service.impl;
 
 import com.datn.controller.ImageController;
-import com.datn.models.dto.ProductPagingResponse;
-import com.datn.models.dto.request.product_cate_cart.ProductRequest;
-import com.datn.models.dto.request.product_cate_cart.ProductUpdate;
-import com.datn.models.dto.response.ProductResponse;
-import com.datn.models.entity.*;
-import com.datn.models.exception.AppException;
-import com.datn.models.exception.ErrorCode;
-import com.datn.models.mapper.ProductMapper;
+import com.datn.dto.ProductPagingResponse;
+import com.datn.dto.request.product_cate_cart.ProductRequest;
+import com.datn.dto.request.product_cate_cart.ProductUpdate;
+import com.datn.dto.response.ProductResponse;
+import com.datn.entity.*;
+
+import com.datn.exception.AppException;
+import com.datn.exception.ErrorCode;
+import com.datn.mapper.ProductMapper;
 import com.datn.repository.*;
-import com.datn.service.AuthorService;
-import com.datn.service.CategoryService;
 import com.datn.service.ImageService;
 import com.datn.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +26,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 
 import static org.apache.el.lang.ELArithmetic.isNumber;

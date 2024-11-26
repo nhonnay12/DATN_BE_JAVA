@@ -2,8 +2,8 @@ package com.datn.service.impl;
 
 
 
-import com.datn.models.dto.RequestDTO;
-import com.datn.models.dto.SearchRequestDTO;
+import com.datn.dto.RequestDTO;
+import com.datn.dto.SearchRequestDTO;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
