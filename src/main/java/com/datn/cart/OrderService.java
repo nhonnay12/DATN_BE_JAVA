@@ -75,13 +75,7 @@ public class OrderService {
             orderDetail.setPrice((double)cartItem.getPrice()); // Lưu giá sản phẩm tại thời điểm đặt hàng
             orderDetailRepository.save(orderDetail); // Lưu OrderDetail
         }
-
-
-
-
-
         return savedOrder;
-
     }
 
     // Order History

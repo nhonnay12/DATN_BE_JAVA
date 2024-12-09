@@ -12,6 +12,7 @@ import org.hibernate.annotations.Filter;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PublisherUpdate {
     int id;
+    String name;
     String address;
     String status;
 }

@@ -39,13 +39,20 @@ public class PublisherServiceImpl implements PublisherService {
     @Override
     public List<PublisherResponse> getAllPublisher() {
 
-        return publisherRepo.findAll().stream().map(publisherMapper::toPublisherResponse).toList();
+        return publisherRepo.findAll().stream()
+                .filter(status -> "ACTIVE".equals(status.getStatus()))
+                .map(publisherMapper::toPublisherResponse).toList();
+    }
+    @Override
+    public List<PublisherResponse> getAll() {
+        return publisherRepo.findAll().stream()
+                .map(publisherMapper::toPublisherResponse).toList();
     }
 
     @Override
     public PublisherResponse updatePublisher(PublisherUpdate request) {
         var publisher = publisherRepo.findById(request.getId()).orElseThrow(() -> new AppException(ErrorCode.PUBLISHER_NOT_EXISTED));
-        publisher.setId(request.getId());
+        publisher.setName(request.getName());
         publisher.setStatus(request.getStatus());
         publisher.setAddress(request.getAddress());
 

@@ -4,6 +4,7 @@ import com.datn.controller.ImageController;
 import com.datn.dto.ProductPagingResponse;
 import com.datn.dto.request.product_cate_cart.ProductRequest;
 import com.datn.dto.request.product_cate_cart.ProductUpdate;
+import com.datn.dto.response.PageResponse;
 import com.datn.dto.response.ProductResponse;
 import com.datn.entity.*;
 
@@ -51,13 +52,14 @@ public class ProductServiceImpl implements ProductService {
     private UserRepository userRepository;
     @Autowired
     private ImageRepo imageRepo;
-@Autowired
-private CategoryRepo categoryRepository;
-@Autowired
-private  PublisherRepo publisherRepository;
-@Autowired
-private AuthorRepo authorRepository;
-@Override
+    @Autowired
+    private CategoryRepo categoryRepository;
+    @Autowired
+    private PublisherRepo publisherRepository;
+    @Autowired
+    private AuthorRepo authorRepository;
+
+    @Override
     public ProductResponse getProduct(Long id) {
         log.info("Get product in DB ");
         var product = productRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
@@ -76,7 +78,7 @@ private AuthorRepo authorRepository;
             throw new AppException(ErrorCode.PRICE_INVALID);
         }
 
-        if(productRepository.findByName(productRequest.getName()).isPresent()){
+        if (productRepository.findByName(productRequest.getName()).isPresent()) {
             throw new AppException(ErrorCode.PRODUCT_EXISTED);
         }
         // Chuyển đổi từ ProductRequest sang Product
@@ -115,9 +117,9 @@ private AuthorRepo authorRepository;
     public ProductResponse updateProduct(ProductUpdate productUpdate, MultipartFile file) {
         var product = productRepository.findById(productUpdate.getId())
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_EXISTED));
-if(product.equals(productUpdate)) {
-    throw new AppException(ErrorCode.PRODUCT_NOT_CHANGES);
-}
+        if (product.equals(productUpdate)) {
+            throw new AppException(ErrorCode.PRODUCT_NOT_CHANGES);
+        }
         // Kiểm tra và cập nhật tên sản phẩm nếu có thay đổi
         if (productUpdate.getName() != null && !productUpdate.getName().equals(product.getName())) {
             product.setName(productUpdate.getName());
@@ -190,7 +192,7 @@ if(product.equals(productUpdate)) {
 
 
         // Chuyển đổi đối tượng sản phẩm sang ProductResponse và trả về
-        return productMapper.toProductResponse( productRepository.save(product));
+        return productMapper.toProductResponse(productRepository.save(product));
     }
 
 
@@ -299,6 +301,7 @@ if(product.equals(productUpdate)) {
                 pageNumber, pageSize, productPage.getTotalElements(),
                 productPage.getTotalPages(), productPage.isLast());
     }
+
     @Override
     public ProductPagingResponse getAllProductwithPagingWithUser(Integer pageNumber, Integer pageSize) {
         // Tạo Pageable cho phân trang
@@ -322,5 +325,17 @@ if(product.equals(productUpdate)) {
         return new ProductPagingResponse(productResponseList,
                 pageNumber, pageSize, productPage.getTotalElements(),
                 productPage.getTotalPages(), productPage.isLast());
+    }
+
+    @Override
+    public PageResponse<Product> getABCProduct(long authId,int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate"));
+        Page<Product> productPage = productRepository.findByAuthorId(authId, pageable);
+        return PageResponse.<Product>builder()
+                .pageNumber(page)
+                .pageSize(size)
+                .totalElements(productPage.getTotalPages())
+                .content(productPage.getContent())
+                .build();
     }
 }

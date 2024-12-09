@@ -36,8 +36,7 @@ public class UserController {
             @Valid @RequestParam("password") @Size(min = 8, message = "INVALID_PASSWORD") String password,
             @RequestParam(value = "firstName", required = false) String firstName,
             @RequestParam(value = "lastName", required = false) String lastName,
-            @RequestParam(value = "email", required = false) @NotEmpty(message = "EMAIL_NOT_NULL")
-            @Pattern(regexp = "^[A-Za-z0-9._%+-]+@gmail\\.com$", message = "EMAIL_INVALID_GMAIL_FORMAT") String email,
+            @RequestParam(value = "email", required = false) String email,
             @RequestParam(value = "phone", required = false) String phone,
             @RequestParam(value = "roles", required = false) String roles,
             @RequestParam(value = "status", required = false) String status,
@@ -52,13 +51,13 @@ public class UserController {
                 .lastName(lastName)
                 .email(email)
                 .phone(phone)
-                .status(status)
+                .status("ACTIVE")
                 .roles(roles)
                 .build();
 
         ApiResponse<UserResponse> apiResponse = ApiResponse.<UserResponse>builder()
                 .code(200)
-                .message("Thêm người dùng thành công!!!")
+                .message("Tạo người dùng thành công!!!")
                 .result(userService.createUser(file, userCreationRequest))
                 .build();
         return apiResponse;
@@ -70,7 +69,7 @@ public class UserController {
     public ApiResponse<UserResponse> updateUser(
             @RequestParam(value = "id", required = true) String id,  // Đảm bảo id được truyền
             @Valid @RequestParam(value = "username", required = false) @Size(min = 4, message = "USERNAME_INVALID") String username,
-            @RequestParam(value = "role", required = false) String role,
+            @RequestParam(value = "roles", required = false) String roles,
             @RequestParam(value = "status", required = false) String status,
             @RequestParam(value = "userImage", required = false) MultipartFile file,
             @RequestParam(value = "phone", required = false) String phone
@@ -81,7 +80,7 @@ public class UserController {
 
         UserUpdateRequest userUpdateRequest = UserUpdateRequest.builder()
                 .id(id)
-                .roles(role)
+                .roles(roles)
                 .status(status)
                 .phone(phone)
                 .username(username)

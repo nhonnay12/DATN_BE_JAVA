@@ -5,6 +5,7 @@ import com.datn.dto.ProductPagingResponse;
 import com.datn.dto.request.product_cate_cart.ProductRequest;
 import com.datn.dto.request.product_cate_cart.ProductUpdate;
 import com.datn.dto.response.ApiResponse;
+import com.datn.dto.response.PageResponse;
 import com.datn.dto.response.ProductResponse;
 import com.datn.service.ProductService;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -92,6 +93,7 @@ public class ProductController {
                                                       @RequestParam(value = "status", required = false) boolean status,
                                                       @RequestParam(value = "category_id", required = false) Long category_id,
                                                       @RequestParam(value = "author_id", required = false) Integer author_id,
+                                                      @RequestParam(value = "linkDrive", required = false) String linkDrive,
                                                       @RequestParam(value = "publisher_id", required = false) Integer publisher_id
     ) throws IOException {
 
@@ -104,6 +106,7 @@ public class ProductController {
                 .status(status)
                 .category_id(category_id)
                 .author_id(author_id)
+                .linkDrive(linkDrive)
                 .publisher_id(publisher_id)
                 .build();
         ApiResponse<ProductResponse> apiResponse = ApiResponse.<ProductResponse>builder()
@@ -201,5 +204,16 @@ public class ProductController {
                 .result(productService.getAllProductwithPagingWithUser(pageNumber, pageSize))
                 .build();
 
+    }
+    @GetMapping("/getabc/{authid}")
+    public ApiResponse<PageResponse> getABC (
+            @PathVariable Long authid,
+            @RequestParam(defaultValue = PageParam.PAGE_NUM) Integer pageNumber,
+            @RequestParam(defaultValue = PageParam.PAGE_SIZE) Integer pageSize
+    ){
+        return ApiResponse.<PageResponse>builder()
+                .message("fdfd")
+                .result(productService.getABCProduct(authid,pageNumber,pageSize))
+                .build();
     }
 }

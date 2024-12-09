@@ -20,7 +20,6 @@ public class UserCreationRequest {
     private String firstName;
     private String lastName;
     @NotEmpty(message = "EMAIL_NOT_NULL")  //@NotNull(message = "EMAIL_NOT_NULL") vẫn giữ nguyên để kiểm tra xem email có bị null không.
-    @Pattern(regexp = "^[A-Za-z0-9._%+-]+@gmail\\.com$", message = "EMAIL_INVALID_GMAIL_FORMAT")
     private String email;
     //@NotEmpty(message = "PHONE_NOT_NULL") thay thế cho @NotNull để kiểm tra chuỗi phone không chỉ null mà còn không rỗng.
     //@NotEmpty(message = "PHONE_NOT_NULL")

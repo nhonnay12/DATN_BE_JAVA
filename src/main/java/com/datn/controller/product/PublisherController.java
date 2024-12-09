@@ -44,6 +44,16 @@ public class PublisherController {
                 .build();
         return apiResponse;
     }
+    @GetMapping("/getallpublishers")
+    public ApiResponse<List<PublisherResponse>> getAll() {
+        ApiResponse<List<PublisherResponse>> apiResponse = ApiResponse.<List<PublisherResponse>>builder()
+                .code(200)
+                .message("Sucess")
+                .result(publisherService.getAll())
+                .build();
+        return apiResponse;
+    }
+
     @DeleteMapping("/{id}")
     public ApiResponse<Void> deletePublisher(@PathVariable int id) {
         publisherService.deletePublisher(id);

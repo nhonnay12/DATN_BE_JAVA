@@ -2,22 +2,82 @@ package com.datn.mapper;
 
 import com.datn.dto.request.user_role.UserUpdateRequest;
 import com.datn.dto.response.UserResponse;
+import com.datn.entity.ImageData;
+import com.datn.entity.Role;
 import com.datn.entity.User;
 import com.datn.dto.request.user_role.UserCreationRequest;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 
-@Mapper(componentModel = "Spring")
-public interface UserMapper {
-    @Mapping(target = "roles", ignore = true)
-    User toUser(UserCreationRequest request);
+import org.springframework.stereotype.Component;
 
-    @Mapping(target = "images", source = "images")
-    @Mapping(target = "status", source = "status")
-    UserResponse toUserResponse(User user);
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
-    @Mapping(target = "username", source = "username")
-    @Mapping(target = "roles", ignore = true)
-    void updateUser(@MappingTarget User user, UserUpdateRequest request);
+
+@Component
+public class UserMapper {
+
+
+    public User toUser(UserCreationRequest request) {
+        if ( request == null ) {
+            return null;
+        }
+
+        User.UserBuilder user = User.builder();
+
+        user.username( request.getUsername() );
+        user.password( request.getPassword() );
+        user.firstName( request.getFirstName() );
+        user.lastName( request.getLastName() );
+        user.email( request.getEmail() );
+        user.phone( request.getPhone() );
+        user.status( request.getStatus() );
+
+        return user.build();
+    }
+
+
+    public UserResponse toUserResponse(User user) {
+        if ( user == null ) {
+            return null;
+        }
+
+        UserResponse.UserResponseBuilder userResponse = UserResponse.builder();
+
+        List<ImageData> list = user.getImages();
+        if ( list != null ) {
+            userResponse.images( new ArrayList<ImageData>( list ) );
+        }
+        userResponse.status( user.getStatus() );
+        Set<Role> set = user.getRoles();
+        if ( set != null ) {
+            userResponse.roles( new LinkedHashSet<Role>( set ) );
+        }
+        userResponse.id( user.getId() );
+        userResponse.username( user.getUsername() );
+        userResponse.password( user.getPassword() );
+        userResponse.firstName( user.getFirstName() );
+        userResponse.lastName( user.getLastName() );
+        userResponse.email( user.getEmail() );
+        userResponse.phone( user.getPhone() );
+
+        return userResponse.build();
+    }
+
+
+    public void updateUser(User user, UserUpdateRequest request) {
+        if ( request == null ) {
+            return;
+        }
+
+        user.setUsername( request.getUsername() );
+        user.setId( request.getId() );
+        user.setPassword( request.getPassword() );
+        user.setFirstName( request.getFirstName() );
+        user.setLastName( request.getLastName() );
+        user.setEmail( request.getEmail() );
+        user.setPhone( request.getPhone() );
+        user.setStatus( request.getStatus() );
+    }
 }

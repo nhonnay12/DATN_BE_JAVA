@@ -45,6 +45,9 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public AuthorResponse updateAuthor(AuthorUpdate request) {
         var author = authorRepo.findById(request.getId()).orElseThrow(() -> new AppException(ErrorCode.AUTHOR_NOT_EXISTED));
+        if(authorRepo.findByName(request.getName()).isPresent()){
+            throw new AppException(ErrorCode.AUTHOR_EXISTED);
+        }
         author.setName(request.getName());
         author.setAddress(request.getAddress());
         author.setId(request.getId());

@@ -14,4 +14,5 @@ public interface PublisherService {
     List<PublisherResponse> getAllPublisher();
     PublisherResponse updatePublisher(PublisherUpdate request);
     void deletePublisher(int id);
+    public List<PublisherResponse> getAll();
 }

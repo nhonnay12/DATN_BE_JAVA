@@ -29,10 +29,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -98,21 +95,41 @@ public class UserServiceImpl implements UserService {
 
         if (request.getStatus() != null && !request.getStatus().equals(user.getStatus())) {
             user.setStatus(request.getStatus());
-
         }
         if (request.getPhone() != null && !request.getPhone().equals(user.getPhone())) {
             user.setPhone(request.getPhone());
 
-        }if (request.getEmail() != null && !request.getEmail().equals(user.getEmail())) {
+        }
+        if (request.getEmail() != null && !request.getEmail().equals(user.getEmail())) {
             user.setEmail(request.getEmail());
 
         }
         // Cập nhật roles chỉ khi roles có thay đổi
-        if (request.getRoles() != null && !request.getRoles().equals(user.getRoles())) {
-            HashSet<Role> roles = new HashSet<>();
-            roleRepository.findById(request.getRoles()).ifPresent(roles::add);
-            user.setRoles(roles);
+//        if (request.getRoles() != null && !request.getRoles().equals(user.getRoles())) {
+//            HashSet<Role> roles = new HashSet<>();
+//            roleRepository.findByName(request.getRoles());
+//            user.setRoles(roles);
+//        }
+        if (request.getRoles() != null) {
+            // Tách chuỗi roles từ request thành danh sách tên các vai trò
+            String[] roleNames = request.getRoles().split(",");
+            Set<Role> newRoles = new HashSet<>();
+
+            for (String roleName : roleNames) {
+                // Tìm vai trò theo tên
+                Optional<Role> roleOptional = roleRepository.findByName(roleName.trim());
+                if (roleOptional.isEmpty()) {
+                    throw new AppException(ErrorCode.ROLE_NOT_EXISTED);
+                }
+                newRoles.add(roleOptional.get());
+            }
+
+            // So sánh và cập nhật roles trong user nếu có sự khác biệt
+            if (!newRoles.equals(user.getRoles())) {
+                user.setRoles(newRoles);
+            }
         }
+
 
         // Kiểm tra và xử lý hình ảnh mới
         if (file != null && !file.isEmpty()) {

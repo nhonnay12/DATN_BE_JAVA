@@ -42,7 +42,6 @@ public class OrderController {
         ApiResponse<Void> apiResponse = ApiResponse.<Void>builder()
                 .code(200)
                 .message("Update Order Success")
-
                 .build();
         orderService.updateOrderStatus(orderId,vnp_TxnRef, OrderStatus.COMPLETED, transactionId);
         return apiResponse;
