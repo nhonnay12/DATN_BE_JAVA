@@ -204,106 +204,71 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductPagingResponse getAllProductWithPagingAndSort(Integer pageNumber, Integer pageSize, String sortBy, String dir) {
+    public ProductPagingResponse<Product> getAllProductWithPagingAndSort(Integer pageNumber, Integer pageSize, String sortBy, String dir) {
         Sort sort = dir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, sort); // vi pgaeNumber bat dau tu 1 nen khi lay page se lay pageNumber - 1 vì khi lấy nó lay từ 0
         Page<Product> productPage = productRepository.findAll(pageable);
-        List<Product> productList = productPage.getContent();
-
-        List<ProductResponse> productResponseList = new ArrayList<>();
-        for (Product product : productList) {
-            ProductResponse productResponse = productMapper.toProductResponse(product);
-            productResponseList.add(productResponse);
-        }
-
-        return new ProductPagingResponse(productResponseList,
-                pageNumber, pageSize, productPage.getTotalElements(),
-                productPage.getTotalPages(), productPage.isLast());
+        return ProductPagingResponse. <Product>builder()
+                .totalPages(productPage.getTotalPages())
+                .products(productPage.getContent())
+                .pageNumber(pageNumber)
+                .pageSize(pageSize)
+                .isLast(productPage.isLast())
+                .build();
     }
 
     @Override
-    public ProductPagingResponse getAllProductwithPaging(Integer pageNumber, Integer pageSize) {
+    public ProductPagingResponse<Product> getAllProductwithPaging(Integer pageNumber, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);// vi pgaeNumber bat dau tu 1 nen khi lay page se lay pageNumber - 1 vì khi lấy nó lay từ 0
         Page<Product> productPage = productRepository.findAll(pageable);
-        List<Product> productList = productPage.getContent();
 
-        List<ProductResponse> productResponseList = new ArrayList<>();
-        for (Product product : productList) {
-            ProductResponse productResponse = productMapper.toProductResponse(product);
-            productResponseList.add(productResponse);
-        }
 
-        return new ProductPagingResponse(productResponseList,
-                pageNumber, pageSize, productPage.getTotalElements(),
-                productPage.getTotalPages(), productPage.isLast());
+        return ProductPagingResponse. <Product>builder()
+                .totalPages(productPage.getTotalPages())
+                .products(productPage.getContent())
+                .pageNumber(pageNumber)
+                .pageSize(pageSize)
+                .isLast(productPage.isLast())
+                .build();
     }
 
     @Override
-    public ProductPagingResponse getAllProductwithPagingWithCategory(Integer pageNumber, Integer pageSize, Long category_id) {
+    public ProductPagingResponse<Product> getAllProductwithPagingWithCategory(Integer pageNumber, Integer pageSize, Long category_id) {
         // Tạo Pageable cho phân trang
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize); // vì pageNumber bắt đầu từ 1, nên giảm đi 1
         // Lọc sản phẩm theo category_id
         Page<Product> productPage = productRepository.findByCategoryId(category_id, pageable);
-        List<Product> productList = productPage.getContent();
-
-        // Chuyển đổi thành ProductResponse
-        List<ProductResponse> productResponseList = new ArrayList<>();
-        for (Product product : productList) {
-            if (product.isStatus()) {
-                ProductResponse productResponse = productMapper.toProductResponse(product);
-                productResponseList.add(productResponse);
-            }
-        }
         // Trả về đối tượng ProductPagingResponse
-        return new ProductPagingResponse(productResponseList,
-                pageNumber, pageSize, productPage.getTotalElements(),
-                productPage.getTotalPages(), productPage.isLast());
+//        return new ProductPagingResponse(productResponseList,
+//                pageNumber, pageSize, productPage.getTotalElements(),
+//                productPage.getTotalPages(), productPage.isLast());
+        return ProductPagingResponse. <Product>builder()
+                .totalPages(productPage.getTotalPages())
+                .products(productPage.getContent())
+                .pageNumber(pageNumber)
+                .pageSize(pageSize)
+                .isLast(productPage.isLast())
+                .build();
     }
 
     @Override
-    public ProductPagingResponse getAllProductwithPagingWithPublisher(Integer pageNumber, Integer pageSize, Long pulisher_id) {
+    public ProductPagingResponse<Product> getAllProductwithPagingWithPublisher(Integer pageNumber, Integer pageSize, Long pulisher_id) {
         // Tạo Pageable cho phân trang
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize); // vì pageNumber bắt đầu từ 1, nên giảm đi 1
         // Lọc sản phẩm theo category_id
         Page<Product> productPage = productRepository.findByPublisherId(pulisher_id, pageable);
-        List<Product> productList = productPage.getContent();
+        return ProductPagingResponse. <Product>builder()
+                .totalPages(productPage.getTotalPages())
+                .products(productPage.getContent())
+                .pageNumber(pageNumber)
+                .pageSize(pageSize)
+                .isLast(productPage.isLast())
+                .build();
 
-        // Chuyển đổi thành ProductResponse
-        List<ProductResponse> productResponseList = new ArrayList<>();
-        for (Product product : productList) {
-            ProductResponse productResponse = productMapper.toProductResponse(product);
-            productResponseList.add(productResponse);
-        }
-
-        // Trả về đối tượng ProductPagingResponse
-        return new ProductPagingResponse(productResponseList,
-                pageNumber, pageSize, productPage.getTotalElements(),
-                productPage.getTotalPages(), productPage.isLast());
     }
 
     @Override
-    public ProductPagingResponse getAllProductwithPagingWithAuthor(Integer pageNumber, Integer pageSize, Long author_id) {
-        // Tạo Pageable cho phân trang
-        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize); // vì pageNumber bắt đầu từ 1, nên giảm đi 1
-        // Lọc sản phẩm theo category_id
-        Page<Product> productPage = productRepository.findByAuthorId(author_id, pageable);
-        List<Product> productList = productPage.getContent();
-
-        // Chuyển đổi thành ProductResponse
-        List<ProductResponse> productResponseList = new ArrayList<>();
-        for (Product product : productList) {
-            ProductResponse productResponse = productMapper.toProductResponse(product);
-            productResponseList.add(productResponse);
-        }
-
-        // Trả về đối tượng ProductPagingResponse
-        return new ProductPagingResponse(productResponseList,
-                pageNumber, pageSize, productPage.getTotalElements(),
-                productPage.getTotalPages(), productPage.isLast());
-    }
-
-    @Override
-    public ProductPagingResponse getAllProductwithPagingWithUser(Integer pageNumber, Integer pageSize) {
+    public ProductPagingResponse<Product> getAllProductwithPagingWithUser(Integer pageNumber, Integer pageSize) {
         // Tạo Pageable cho phân trang
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize); // vì pageNumber bắt đầu từ 1, nên giảm đi 1
         // Lọc sản phẩm theo category_id
@@ -312,19 +277,26 @@ public class ProductServiceImpl implements ProductService {
         User user = userRepository.findByUsername(name).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         Page<Product> productPage = productRepository.findByUserId(user.getId(), pageable);
-        List<Product> productList = productPage.getContent();
-
-        // Chuyển đổi thành ProductResponse
-        List<ProductResponse> productResponseList = new ArrayList<>();
-        for (Product product : productList) {
-            ProductResponse productResponse = productMapper.toProductResponse(product);
-            productResponseList.add(productResponse);
-        }
+//        List<Product> productList = productPage.getContent();
+//
+//        // Chuyển đổi thành ProductResponse
+//        List<ProductResponse> productResponseList = new ArrayList<>();
+//        for (Product product : productList) {
+//            ProductResponse productResponse = productMapper.toProductResponse(product);
+//            productResponseList.add(productResponse);
+//        }
 
         // Trả về đối tượng ProductPagingResponse
-        return new ProductPagingResponse(productResponseList,
-                pageNumber, pageSize, productPage.getTotalElements(),
-                productPage.getTotalPages(), productPage.isLast());
+//        return new ProductPagingResponse(productResponseList,
+//                pageNumber, pageSize, productPage.getTotalElements(),
+//                productPage.getTotalPages(), productPage.isLast());
+        return ProductPagingResponse. <Product>builder()
+                .totalPages(productPage.getTotalPages())
+                .products(productPage.getContent())
+                .pageNumber(pageNumber)
+                .pageSize(pageSize)
+                .isLast(productPage.isLast())
+                .build();
     }
 
     @Override
@@ -336,6 +308,22 @@ public class ProductServiceImpl implements ProductService {
                 .pageSize(size)
                 .totalElements(productPage.getTotalPages())
                 .content(productPage.getContent())
+                .build();
+    }
+
+    @Override
+    public ProductPagingResponse<Product> getAllProductwithPagingWithAuthor(Integer pageNumber, Integer pageSize, Long author_id) {
+        // Tạo Pageable cho phân trang
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize); // vì pageNumber bắt đầu từ 1, nên giảm đi 1
+
+        Page<Product> productPage = productRepository.findByAuthorId(author_id, pageable);
+
+        return ProductPagingResponse.<Product>builder()
+                .totalPages(productPage.getTotalPages())
+                .products(productPage.getContent())
+                .pageNumber(pageNumber)
+                .pageSize(pageSize)
+                .isLast(productPage.isLast())
                 .build();
     }
 }

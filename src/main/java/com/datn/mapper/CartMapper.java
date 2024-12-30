@@ -1,7 +1,7 @@
 package com.datn.mapper;
 
-import com.datn.cart.CartDTO;
-import com.datn.cart.CartItemDTO;
+import com.datn.dto.request.CartDTO;
+import com.datn.dto.request.CartItemDTO;
 import com.datn.entity.Cart;
 import com.datn.entity.CartItem;
 

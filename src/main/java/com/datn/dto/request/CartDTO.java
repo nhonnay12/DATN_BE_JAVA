@@ -1,6 +1,5 @@
-package com.datn.cart;
+package com.datn.dto.request;
 
-import com.datn.entity.User;
 import lombok.*;
 
 import java.util.List;

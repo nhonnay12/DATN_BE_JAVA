@@ -1,7 +1,7 @@
 package com.datn.controller;
 
-import com.datn.cart.CartDTO;
-import com.datn.cart.CartService;
+import com.datn.dto.request.CartDTO;
+import com.datn.service.CartService;
 import com.datn.dto.AddToCart;
 import com.datn.dto.response.ApiResponse;
 import com.datn.entity.Cart;

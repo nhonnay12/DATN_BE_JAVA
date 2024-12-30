@@ -1,4 +1,4 @@
-package com.datn.cart;
+package com.datn.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

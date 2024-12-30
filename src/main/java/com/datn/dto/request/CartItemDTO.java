@@ -1,4 +1,4 @@
-package com.datn.cart;
+package com.datn.dto.request;
 
 import com.datn.entity.Product;
 import lombok.*;
